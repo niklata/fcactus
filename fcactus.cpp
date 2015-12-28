@@ -159,6 +159,9 @@ void inotify::dispatch() {
         boost::algorithm::replace_all(args, "$@", wmi->second->filepath_);
         boost::algorithm::replace_all(args, "$$", "$"); // must be last
 
+        fmt::print("Event[{}]: exec '{} {}'\n", wmi->second->filepath_,
+                   wmi->second->cmd_, args);
+
         wmi->second->exec(args);
     }
 }
