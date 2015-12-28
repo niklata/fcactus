@@ -5,6 +5,7 @@ REQUIREMENTS
 ------------
 
 Linux kernel
+Ragel
 cppformat
 ncmlib
 Boost
