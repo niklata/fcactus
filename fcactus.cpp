@@ -83,8 +83,8 @@ void epollfd::manip(int fd, int mtype) {
 std::pair<bool, int> inotify::add(std::unique_ptr<watch_meta> &&meta) {
     int fdt = inotify_add_watch(inotify_fd_.fd_, meta->filepath_.c_str(), meta->eventflags_);
     if (fdt < 0) {
-        fmt::print("Failed to set watch [{}][{}]: {}\n", meta->filepath_, meta->eventflags_,
-                   strerror(errno));
+        fmt::print(stderr, "Failed to set watch [{}][{}]: {}\n", meta->filepath_,
+                   meta->eventflags_, strerror(errno));
         return std::make_pair(false, fdt);
     }
     watches_.emplace(std::make_pair(fdt, std::move(meta)));
@@ -140,7 +140,7 @@ void inotify::dispatch() {
 
         auto wmi = watches_.find(event->wd);
         if (wmi == watches_.end()) {
-            fmt::print("no job metadata for wd [{}]\n", event->wd);
+            fmt::print(stderr, "no job metadata for wd [{}]\n", event->wd);
             continue;
         }
 
@@ -161,6 +161,7 @@ void inotify::dispatch() {
 
         fmt::print("Event[{}]: exec '{} {}'\n", wmi->second->filepath_,
                    wmi->second->cmd_, args);
+        std::fflush(stdout);
 
         wmi->second->exec(args);
     }
@@ -186,35 +187,34 @@ void signal_fd::dispatch(void)
     memset(&si, 0, sizeof si);
     ssize_t r = safe_read(fd_, (char *)&si, sizeof si);
     if (r < 0) {
-        fmt::print("error reading from signalfd: {}", strerror(errno));
+        fmt::print(stderr, "error reading from signalfd: {}", strerror(errno));
         return;
     }
     if ((size_t)r < sizeof si) {
-        fmt::print("short read from signalfd: {} < {}\n", r, sizeof si);
+        fmt::print(stderr, "short read from signalfd: {} < {}\n", r, sizeof si);
         return;
     }
+    static const char *signames[] = { "HUP", "TERM", "INT" };
+    unsigned signame = 0;
     switch (si.ssi_signo) {
-        case SIGHUP:
-            fmt::print("Received SIGHUP.  Exiting gracefully.\n");
-            return;
+        case SIGHUP: signame = 0; break;
         case SIGCHLD:
             while (waitpid(-1, NULL, WNOHANG) > 0);
             return;
-        case SIGTERM:
-            fmt::print("Received SIGTERM.  Exiting gracefully.\n");
-            exit(EXIT_SUCCESS);
-        case SIGINT:
-            fmt::print("Received SIGINT.  Exiting gracefully.\n");
-            exit(EXIT_SUCCESS);
+        case SIGTERM: signame = 1; break;
+        case SIGINT: signame = 2; break;
         default: return;
     }
+    fmt::print("Received SIG{}.  Exiting gracefully.\n", signames[signame]);
+    std::fflush(stdout);
+    exit(EXIT_SUCCESS);
 }
 
 static void print_version(void)
 {
     printf("fcactus %s, inotify action daemon.\n", FCACTUS_VERSION);
     printf(
-"Copyright (c) 2015 Nicholas J. Kain\n"
+"Copyright (c) 2015-2016 Nicholas J. Kain\n"
 "All rights reserved.\n\n"
 "Redistribution and use in source and binary forms, with or without\n"
 "modification, are permitted provided that the following conditions are met:\n\n"
@@ -265,7 +265,7 @@ static void process_options(int ac, char *av[]) {
         g_fcactus_conf = vm["config"].as<std::string>();
     if (vm.count("help")) {
         fmt::print("fcactus " FCACTUS_VERSION ", inotify action daemon.\n"
-                   "Copyright (c) 2015 Nicholas J. Kain\n"
+                   "Copyright (c) 2015-2016 Nicholas J. Kain\n"
                    "{} [options]...\n{}\n", av[0], cmdline_options);
         std::exit(EXIT_FAILURE);
     }
@@ -315,13 +315,13 @@ int main(int argc, char* argv[])
             int fd = events[i].data.fd;
             if (fd == sigfd.fd()) {
                 if (!(events[i].events & EPOLLIN)) {
-                    fmt::print("sigfd event that isn't IN\n");
+                    fmt::print(stderr, "sigfd event that isn't IN\n");
                     continue;
                 }
                 sigfd.dispatch();
             } else if (fd == inyfd.fd()) {
                 if (!(events[i].events & EPOLLIN)) {
-                    fmt::print("inyfd event that isn't IN\n");
+                    fmt::print(stderr, "inyfd event that isn't IN\n");
                     continue;
                 }
                 inyfd.dispatch();
