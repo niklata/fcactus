@@ -40,8 +40,8 @@ MOTIVATION
 Since ndhc by design does not run scripts, another program must perform any
 actions that are necessary when the DHCP-assigned IP address changes.
 
-fcactus is intended to perform this task by watching for fclosewrite
-events on the /etc/ndhc/LEASE-interface file.
+fcactus is intended to perform this task by watching for fmodify events on the
+/etc/ndhc/LEASE-interface file.
 
 Since there's no reason other than laziness to write a specific tool
 for a task when a general tool could also be written to perform the task
