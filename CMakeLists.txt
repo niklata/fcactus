@@ -124,9 +124,6 @@ include_directories("${PROJECT_SOURCE_DIR}"
 add_subdirectory(ncmlib)
 add_subdirectory(cppformat)
 
-find_package( Boost COMPONENTS )
-include_directories ( ${Boost_INCLUDE_DIRS} )
-
 set(RAGEL_CRONTAB ${CMAKE_CURRENT_BINARY_DIR}/crontab.cpp)
 
 find_program(RAGEL ragel)

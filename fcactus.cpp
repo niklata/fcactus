@@ -9,13 +9,13 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/prctl.h>
-#include <boost/algorithm/string/replace.hpp>
 extern "C" {
 #include "nk/io.h"
 #include "nk/exec.h"
 #include "nk/privilege.h"
 #include "nk/pidfile.h"
 }
+#include "string_replace_all.hpp"
 #include "optionparser.hpp"
 
 #define FCACTUS_VERSION "0.1"
@@ -152,11 +152,11 @@ void inotify::dispatch() {
 #endif
 
         std::string args(wmi->second->args_);
-        boost::algorithm::replace_all(args, "$%", mask_string(event->mask));
-        boost::algorithm::replace_all(args, "$&", std::to_string(event->mask));
-        boost::algorithm::replace_all(args, "$#", std::string(event->name));
-        boost::algorithm::replace_all(args, "$@", wmi->second->filepath_);
-        boost::algorithm::replace_all(args, "$$", "$"); // must be last
+        string_replace_all(args, "$%", 2, mask_string(event->mask).c_str());
+        string_replace_all(args, "$&", 2, std::to_string(event->mask).c_str());
+        string_replace_all(args, "$#", 2, std::string(event->name).c_str());
+        string_replace_all(args, "$@", 2, wmi->second->filepath_.c_str());
+        string_replace_all(args, "$$", 2, "$"); // must be last
 
         fmt::print("Event[{}]: exec '{} {}'\n", wmi->second->filepath_,
                    wmi->second->cmd_, args);

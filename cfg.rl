@@ -5,7 +5,7 @@
 extern "C" {
 #include "nk/privilege.h"
 }
-#include <boost/algorithm/string/replace.hpp>
+#include "string_replace_all.hpp"
 
 struct ParseCfgState {
     ParseCfgState(inotify &inot) : wm(nullptr), inw(inot),
@@ -105,8 +105,8 @@ struct pckm {
     action St { pckm.st = p; }
     action CmdEn {
         fas.wm->cmd_ = std::string(pckm.st, p - pckm.st);
-        boost::algorithm::replace_all(fas.wm->cmd_, "\\ ", " ");
-        boost::algorithm::replace_all(fas.wm->cmd_, "\\\\", "\\");
+        string_replace_all(fas.wm->cmd_, "\\ ", 2, " ");
+        string_replace_all(fas.wm->cmd_, "\\\\", 2, "\\");
     }
     action ArgEn { fas.wm->args_ = std::string(pckm.st, p - pckm.st); }
 
