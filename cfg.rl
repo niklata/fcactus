@@ -1,11 +1,13 @@
 #include "fcactus.hpp"
 #include <cstring>
 #include <climits>
-#include <fstream>
 extern "C" {
 #include "nk/privilege.h"
 }
 #include "string_replace_all.hpp"
+#include "scopeguard.hpp"
+
+#define MAX_LINE 2048
 
 struct ParseCfgState {
     ParseCfgState(inotify &inot) : wm(nullptr), inw(inot),
@@ -284,10 +286,9 @@ static void parse_command_key(ParseCfgState &fas)
 
 %% write data;
 
-static int do_parse_config(ParseCfgState &fas, const std::string &l)
+static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 {
-    const char *p = l.c_str();
-    const char *pe = p + l.size();
+    const char *pe = p + plen;
     const char *eof = pe;
 
     %% write init;
@@ -302,27 +303,29 @@ static int do_parse_config(ParseCfgState &fas, const std::string &l)
 
 void parse_config(inotify &inot, const std::string &path)
 {
+    char buf[MAX_LINE];
     struct ParseCfgState fas(inot);
 
-    std::string l;
-    std::ifstream f(path, std::ifstream::in);
-    if (f.fail() || f.bad() || f.eof()) {
+    auto f = fopen(path.c_str(), "r");
+    if (!f) {
         fmt::print(stderr, "{}: failed to open file: '{}'\n", __func__, path);
         std::exit(EXIT_FAILURE);
     }
-    while (1) {
-        std::getline(f, l);
+    SCOPE_EXIT{ fclose(f); };
+    while (!feof(f)) {
+        auto fsv = fgets(buf, sizeof buf, f);
+        auto llen = strlen(buf);
+        if (buf[llen-1] == '\n')
+            buf[--llen] = 0;
         ++fas.linenum;
-        if (f.eof())
+        if (!fsv) {
+            if (!feof(f))
+                fmt::print(stderr, "{}: io error fetching line of '{}'\n", __func__, path);
             break;
-        else if (f.bad() || f.fail()) {
-            fmt::print(stderr, "{}: io error fetching line of '{}'\n",
-                       __func__, path);
-            std::exit(EXIT_FAILURE);
         }
-        if (l.empty())
+        if (llen == 0)
             continue;
-        auto r = do_parse_config(fas, l);
+        auto r = do_parse_config(fas, buf, llen);
         if (r < 0) {
             fmt::print(stderr, "{}: do_parse_config({}) failed at line {}\n",
                        __func__, path, fas.linenum);
