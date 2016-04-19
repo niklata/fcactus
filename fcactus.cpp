@@ -2,7 +2,6 @@
 #include "cfg.hpp"
 #include <cstring>
 #include <climits>
-#include <fstream>
 #include <errno.h>
 #include <signal.h>
 #include <sys/signalfd.h>
@@ -10,7 +9,6 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/prctl.h>
-#include <boost/program_options.hpp>
 #include <boost/algorithm/string/replace.hpp>
 extern "C" {
 #include "nk/io.h"
@@ -18,6 +16,7 @@ extern "C" {
 #include "nk/privilege.h"
 #include "nk/pidfile.h"
 }
+#include "optionparser.hpp"
 
 #define FCACTUS_VERSION "0.1"
 
@@ -212,66 +211,101 @@ void signal_fd::dispatch(void)
 
 static void print_version(void)
 {
-    printf("fcactus %s, inotify action daemon.\n", FCACTUS_VERSION);
-    printf(
-"Copyright (c) 2015-2016 Nicholas J. Kain\n"
-"All rights reserved.\n\n"
-"Redistribution and use in source and binary forms, with or without\n"
-"modification, are permitted provided that the following conditions are met:\n\n"
-"- Redistributions of source code must retain the above copyright notice,\n"
-"  this list of conditions and the following disclaimer.\n"
-"- Redistributions in binary form must reproduce the above copyright notice,\n"
-"  this list of conditions and the following disclaimer in the documentation\n"
-"  and/or other materials provided with the distribution.\n\n"
-"THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n"
-"AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n"
-"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n"
-"ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n"
-"LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n"
-"CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n"
-"SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n"
-"INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n"
-"CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n"
-"ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n"
-"POSSIBILITY OF SUCH DAMAGE.\n"
-           );
+    fmt::print("fcactus " FCACTUS_VERSION ", inotify action daemon.\n"
+               "Copyright (c) 2015-2016 Nicholas J. Kain\n"
+               "All rights reserved.\n\n"
+               "Redistribution and use in source and binary forms, with or without\n"
+               "modification, are permitted provided that the following conditions are met:\n\n"
+               "- Redistributions of source code must retain the above copyright notice,\n"
+               "  this list of conditions and the following disclaimer.\n"
+               "- Redistributions in binary form must reproduce the above copyright notice,\n"
+               "  this list of conditions and the following disclaimer in the documentation\n"
+               "  and/or other materials provided with the distribution.\n\n"
+               "THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n"
+               "AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n"
+               "IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n"
+               "ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n"
+               "LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n"
+               "CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n"
+               "SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n"
+               "INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n"
+               "CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n"
+               "ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n"
+               "POSSIBILITY OF SUCH DAMAGE.\n");
 }
 
-static void process_options(int ac, char *av[]) {
-    namespace po = boost::program_options;
-    po::options_description cli_opts("Command-line options");
-    cli_opts.add_options()
-        ("config,c", po::value<std::string>(),
-         "path to configuration file")
-        ("help,h", "print help message")
-        ("version,v", "print version information")
-        ;
-
-    po::options_description cmdline_options;
-    cmdline_options.add(cli_opts);
-    po::options_description cfgfile_options;
-
-    po::positional_options_description p;
-    po::variables_map vm;
-    try {
-        po::store(po::command_line_parser(ac, av).
-                  options(cmdline_options).positional(p).run(), vm);
-    } catch (const std::exception& e) {
-        fmt::print(stderr, "{}\n", e.what());
+struct Arg : public option::Arg
+{
+    static void print_error(const char *head, const option::Option &opt, const char *tail)
+    {
+        fmt::fprintf(stderr, "%s%.*s%s", head, opt.namelen, opt.name, tail);
     }
-    po::notify(vm);
-
-    if (vm.count("config"))
-        g_fcactus_conf = vm["config"].as<std::string>();
-    if (vm.count("help")) {
-        fmt::print("fcactus " FCACTUS_VERSION ", inotify action daemon.\n"
-                   "Copyright (c) 2015-2016 Nicholas J. Kain\n"
-                   "{} [options]...\n{}\n", av[0], cmdline_options);
+    static option::ArgStatus Unknown(const option::Option &opt, bool msg)
+    {
+        if (msg) print_error("Unknown option '", opt, "'\n");
+        return option::ARG_ILLEGAL;
+    }
+    static option::ArgStatus String(const option::Option &opt, bool msg)
+    {
+        if (opt.arg && opt.arg[0])
+            return option::ARG_OK;
+        if (msg) print_error("Option '", opt, "' requires an argument\n");
+        return option::ARG_ILLEGAL;
+    }
+    static option::ArgStatus Integer(const option::Option &opt, bool msg)
+    {
+        char *endptr{nullptr};
+        if (opt.arg && strtol(opt.arg, &endptr, 10)){}
+        if (endptr != opt.arg && !*endptr)
+            return option::ARG_OK;
+        if (msg) print_error("Option '", opt, "' requires an integer argument\n");
+        return option::ARG_ILLEGAL;
+    }
+};
+enum OpIdx {
+    OPT_UNKNOWN, OPT_HELP, OPT_VERSION, OPT_CONFIG
+};
+static const option::Descriptor usage[] = {
+    { OPT_UNKNOWN,    0,  "",           "", Arg::Unknown,
+        "fcactus " FCACTUS_VERSION ", inotify action daemon.\n"
+        "Copyright (c) 2015-2016 Nicholas J. Kain\n"
+        "fcactus [options]...\n\nOptions:" },
+    { OPT_HELP,       0, "h",            "help",    Arg::None, "\t-h, \t--help  \tPrint usage and exit." },
+    { OPT_VERSION,    0, "v",         "version",    Arg::None, "\t-v, \t--version  \tPrint version and exit." },
+    { OPT_CONFIG,     0, "c",          "config",  Arg::String, "\t-c, \t--config  \tPath to configuration file." },
+    {0,0,0,0,0,0}
+};
+static void process_options(int ac, char *av[])
+{
+    ac-=ac>0; av+=ac>0;
+    option::Stats stats(usage, ac, av);
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wvla"
+    option::Option options[stats.options_max], buffer[stats.buffer_max];
+#pragma GCC diagnostic pop
+    option::Parser parse(usage, ac, av, options, buffer);
+#else
+    auto options = std::make_unique<option::Option[]>(stats.options_max);
+    auto buffer = std::make_unique<option::Option[]>(stats.buffer_max);
+    option::Parser parse(usage, ac, av, options.get(), buffer.get());
+#endif
+    if (parse.error())
+        std::exit(EXIT_FAILURE);
+    if (options[OPT_HELP]) {
+        int col = getenv("COLUMNS") ? atoi(getenv("COLUMNS")) : 80;
+        option::printUsage(fwrite, stdout, usage, col);
         std::exit(EXIT_FAILURE);
     }
-    if (vm.count("version")) {
+    if (options[OPT_VERSION]) {
         print_version();
         std::exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < parse.optionsCount(); ++i) {
+        option::Option &opt = buffer[i];
+        if (opt.index() == OPT_CONFIG)
+            g_fcactus_conf = std::string(opt.arg);
     }
 }
 

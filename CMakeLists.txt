@@ -124,8 +124,7 @@ include_directories("${PROJECT_SOURCE_DIR}"
 add_subdirectory(ncmlib)
 add_subdirectory(cppformat)
 
-find_package( Boost COMPONENTS program_options )
-link_directories ( ${Boost_LIBRARY_DIRS} )
+find_package( Boost COMPONENTS )
 include_directories ( ${Boost_INCLUDE_DIRS} )
 
 set(RAGEL_CRONTAB ${CMAKE_CURRENT_BINARY_DIR}/crontab.cpp)
@@ -142,4 +141,4 @@ add_custom_command(
 
 file(GLOB FCACTUS_SRCS "*.cpp")
 add_executable(fcactus ${RAGEL_CRONTAB} ${FCACTUS_SRCS})
-target_link_libraries(fcactus ncmlib cppformat ${Boost_LIBRARIES})
+target_link_libraries(fcactus ncmlib cppformat)
