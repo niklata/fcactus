@@ -82,29 +82,11 @@ struct ParseCfgState {
         rli.rlim_cur = v_int == 0 ? RLIM_INFINITY : v_int;
         rli.rlim_max = v_int2 == 0 ? RLIM_INFINITY : v_int2;
 
-        if (!wm->limits_)
-            wm->limits_ = std::make_unique<rlimits>();
-
-        switch (type) {
-        case RLIMIT_CPU: wm->limits_->cpu = rli; break;
-        case RLIMIT_FSIZE: wm->limits_->fsize = rli; break;
-        case RLIMIT_DATA: wm->limits_->data = rli; break;
-        case RLIMIT_STACK: wm->limits_->stack = rli; break;
-        case RLIMIT_CORE: wm->limits_->core = rli; break;
-        case RLIMIT_RSS: wm->limits_->rss = rli; break;
-        case RLIMIT_NPROC: wm->limits_->nproc = rli; break;
-        case RLIMIT_NOFILE: wm->limits_->nofile = rli; break;
-        case RLIMIT_MEMLOCK: wm->limits_->memlock = rli; break;
-    #ifndef BSD
-        case RLIMIT_AS: wm->limits_->as = rli; break;
-        case RLIMIT_MSGQUEUE: wm->limits_->msgqueue = rli; break;
-        case RLIMIT_NICE: wm->limits_->nice = rli; break;
-        case RLIMIT_RTTIME: wm->limits_->rttime = rli; break;
-        case RLIMIT_RTPRIO: wm->limits_->rtprio = rli; break;
-        case RLIMIT_SIGPENDING: wm->limits_->sigpending = rli; break;
-    #endif /* BSD */
-        default: fmt::print(stderr, "{}: Bad RLIMIT_type specified.\n", __func__);
-                 std::exit(EXIT_FAILURE);
+        try {
+            wm->limits_.add(type, rli);
+        } catch (const std::logic_error&) {
+            fmt::print(stderr, "{}: Bad RLIMIT_type specified.\n", __func__);
+            std::exit(EXIT_FAILURE);
         }
     }
 

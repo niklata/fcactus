@@ -35,7 +35,7 @@ void watch_meta::exec(const std::string &args)
     case 0:
         if (!chroot_.empty())
             nk_set_chroot(chroot_.c_str());
-        if (limits_ && limits_->enforce(user_, group_, cmd_)) {
+        if (limits_.exist() && limits_.enforce(user_, group_, cmd_)) {
             fmt::print(stderr, "{}: rlimits::enforce failed\n", __func__);
             std::exit(EXIT_FAILURE);
         }

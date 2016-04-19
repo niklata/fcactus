@@ -18,7 +18,7 @@ struct watch_meta {
     std::string args_;
     std::string filepath_;
     std::string chroot_;
-    std::unique_ptr<rlimits> limits_;
+    rlimits limits_;
     int eventflags_;
     uid_t user_;
     gid_t group_;
