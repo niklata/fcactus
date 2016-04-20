@@ -1,11 +1,11 @@
 #include "fcactus.hpp"
 #include <cstring>
 #include <climits>
+#include <nk/string_replace_all.hpp>
+#include <nk/scopeguard.hpp>
 extern "C" {
 #include "nk/privilege.h"
 }
-#include "string_replace_all.hpp"
-#include "scopeguard.hpp"
 
 #define MAX_LINE 2048
 

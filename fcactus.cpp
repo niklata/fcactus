@@ -9,14 +9,14 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/prctl.h>
+#include <nk/string_replace_all.hpp>
+#include <nk/optionarg.hpp>
 extern "C" {
 #include "nk/io.h"
 #include "nk/exec.h"
 #include "nk/privilege.h"
 #include "nk/pidfile.h"
 }
-#include "string_replace_all.hpp"
-#include "optionarg.hpp"
 
 #define FCACTUS_VERSION "0.1"
 
