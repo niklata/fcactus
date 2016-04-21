@@ -233,12 +233,14 @@ static void parse_command_key(ParseCfgState &fas)
     action ChrootEn { fas.wm->chroot_ = std::string(fas.v_str, fas.v_strlen); }
     action CommandEn { parse_command_key(fas); }
     action WatchEn { fas.wm->filepath_ = std::string(fas.v_str, fas.v_strlen); }
+    action PathEn { fas.wm->path_ = std::string(fas.v_str, fas.v_strlen); }
 
     group = 'group'i eqsep stringval % GroupEn;
     user = 'user'i eqsep stringval % UserEn;
     chroot = 'chroot'i eqsep stringval % ChrootEn;
     command = 'command'i eqsep stringval % CommandEn;
     watch = 'watch'i eqsep stringval % WatchEn;
+    path = 'path'i eqsep stringval % PathEn;
 
     action FAccessEn { fas.wm->eventflags_ |= IN_ACCESS; }
     action FAttribEn { fas.wm->eventflags_ |= IN_ATTRIB; }
@@ -269,7 +271,7 @@ static void parse_command_key(ParseCfgState &fas)
     fopen = 'fopen'i % FOpenEn;
     fmove = 'fmove'i % FMoveEn;
 
-    cmds = watch | command | chroot | user | group |
+    cmds = watch | command | chroot | path | user | group |
            faccess | fattrib | fclosewrite | fclosenowrite | fclose | fcreate |
            fdelete | fdeleteself | fmodify | fmoveself | fmovefrom | fmoveto |
            fopen | fmove |

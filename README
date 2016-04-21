@@ -153,6 +153,12 @@ group = GROUP_NAME_OR_GID
 
 Runs the subprocess as the specified group.
 
+path = PATH_LIST
+
+Sets the PATH variable in environment of the spawned process to
+PATH_LIST.  The format of PATH_LIST should be identical of that
+used by shells (eg, path1:path2:path3).
+
 The following keywords all enforce rlimits and have the same syntax;
 each of these keywords should be of the form "keyword = NUMBER0" or
 "keyword = NUMBER0, NUMBER1".  NUMBER0 represents the soft limit

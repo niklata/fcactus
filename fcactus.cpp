@@ -41,6 +41,7 @@ void watch_meta::exec(const std::string &args)
     switch ((int)fork()) {
     case 0:
         if (nk_generate_env(user_, chroot_.empty() ? nullptr : chroot_.c_str(),
+                            path_.empty() ? nullptr : path_.c_str(),
                             env, MAX_CENV, envbuf, sizeof envbuf) < 0) {
             const char errstr[] = "watch_meta::exec: failed to generate environment\n";
             write(STDERR_FILENO, errstr, sizeof errstr);
