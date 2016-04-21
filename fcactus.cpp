@@ -19,6 +19,8 @@ extern "C" {
 }
 
 #define FCACTUS_VERSION "0.1"
+#define MAX_CENV 50
+#define MAX_ENVBUF 2048
 
 static std::string g_fcactus_conf("/etc/fcactus.actions");
 
@@ -28,47 +30,63 @@ static void fail_on_fdne(const std::string &file, const char *mode)
         exit(EXIT_FAILURE);
 }
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
+#endif
 void watch_meta::exec(const std::string &args)
 {
+    char *env[MAX_CENV];
+    char envbuf[MAX_ENVBUF];
     switch ((int)fork()) {
     case 0:
-        if (!chroot_.empty())
-            nk_set_chroot(chroot_.c_str());
+        if (nk_generate_env(user_, chroot_.empty() ? nullptr : chroot_.c_str(),
+                            env, MAX_CENV, envbuf, sizeof envbuf) < 0) {
+            const char errstr[] = "watch_meta::exec: failed to generate environment\n";
+            write(STDERR_FILENO, errstr, sizeof errstr);
+            std::exit(EXIT_FAILURE);
+        }
         if (limits_.exist() && limits_.enforce(user_, group_, cmd_)) {
-            fmt::print(stderr, "{}: rlimits::enforce failed\n", __func__);
+            const char errstr[] = "watch_meta::exec: rlimits::enforce failed\n";
+            write(STDERR_FILENO, errstr, sizeof errstr);
             std::exit(EXIT_FAILURE);
         }
         if (group_) {
             if (setresgid(group_, group_, group_)) {
-                fmt::print(stderr, "{}: setgid({}) failed for \"{}\": {}\n",
-                           __func__, group_, cmd_, strerror(errno));
+                const char errstr[] = "watch_meta::exec: setresgid failed\n";
+                write(STDERR_FILENO, errstr, sizeof errstr);
                 std::exit(EXIT_FAILURE);
             }
             if (getgid() == 0) {
-                fmt::print(stderr, "{}: child is still gid=root after setgid()\n",
-                           __func__);
+                const char errstr[] = "watch_meta::exec: child is still gid=root after setgid()\n";
+                write(STDERR_FILENO, errstr, sizeof errstr);
                 std::exit(EXIT_FAILURE);
             }
         }
         if (user_) {
             if (setresuid(user_, user_, user_)) {
-                fmt::print(stderr, "{}: setuid({}) failed for \"{}\": {}\n",
-                           __func__, user_, cmd_, strerror(errno));
+                const char errstr[] = "watch_meta::exec: setresuid failed\n";
+                write(STDERR_FILENO, errstr, sizeof errstr);
                 std::exit(EXIT_FAILURE);
             }
             if (getuid() == 0) {
-                fmt::print(stderr, "{}: child is still uid=root after setuid()\n", __func__);
+                const char errstr[] = "watch_meta::exec: child is still uid=root after setuid()\n";
+                write(STDERR_FILENO, errstr, sizeof errstr);
                 std::exit(EXIT_FAILURE);
             }
-            nk_fix_env(user_, true);
         }
-        nk_execute(cmd_.c_str(), args.c_str());
-    case -1:
-        fmt::print(stderr, "{}: fork failed: {}\n", __func__, strerror(errno));
+        nk_execute(cmd_.c_str(), args.c_str(), env);
+    case -1: {
+        const char errstr[] = "watch_meta::exec: fork failed\n";
+        write(STDERR_FILENO, errstr, sizeof errstr);
         std::exit(EXIT_FAILURE);
+    }
     default: break;
     }
 }
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 void epollfd::manip(int fd, int mtype) {
     struct epoll_event ev;
