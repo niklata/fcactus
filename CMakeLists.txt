@@ -124,12 +124,12 @@ include_directories("${PROJECT_SOURCE_DIR}"
 add_subdirectory(ncmlib)
 add_subdirectory(cppformat)
 
-set(RAGEL_CRONTAB ${CMAKE_CURRENT_BINARY_DIR}/crontab.cpp)
+set(RAGEL_CFG ${CMAKE_CURRENT_BINARY_DIR}/cfg.cpp)
 
 find_program(RAGEL ragel)
 add_custom_command(
-  OUTPUT ${RAGEL_CRONTAB}
-  COMMAND ${RAGEL} -G2 -o ${RAGEL_CRONTAB} cfg.rl
+  OUTPUT ${RAGEL_CFG}
+  COMMAND ${RAGEL} -G2 -o ${RAGEL_CFG} cfg.rl
   DEPENDS cfg.rl
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   COMMENT "Compiling Ragel state machine: cfg.rl"
@@ -137,5 +137,5 @@ add_custom_command(
   )
 
 file(GLOB FCACTUS_SRCS "*.cpp")
-add_executable(fcactus ${RAGEL_CRONTAB} ${FCACTUS_SRCS})
+add_executable(fcactus ${RAGEL_CFG} ${FCACTUS_SRCS})
 target_link_libraries(fcactus ncmlib cppformat)
