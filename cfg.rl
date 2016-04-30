@@ -315,20 +315,18 @@ void parse_config(inotify &inot, const std::string &path)
     }
     SCOPE_EXIT{ fclose(f); };
     while (!feof(f)) {
-        auto fsv = fgets(buf, sizeof buf, f);
-        auto llen = strlen(buf);
-        if (buf[llen-1] == '\n')
-            buf[--llen] = 0;
-        ++fas.linenum;
-        if (!fsv) {
+        if (!fgets(buf, sizeof buf, f)) {
             if (!feof(f))
                 fmt::print(stderr, "{}: io error fetching line of '{}'\n", __func__, path);
             break;
         }
+        auto llen = strlen(buf);
         if (llen == 0)
             continue;
-        auto r = do_parse_config(fas, buf, llen);
-        if (r < 0) {
+        if (buf[llen-1] == '\n')
+            buf[--llen] = 0;
+        ++fas.linenum;
+        if (do_parse_config(fas, buf, llen) < 0) {
             fmt::print(stderr, "{}: do_parse_config({}) failed at line {}\n",
                        __func__, path, fas.linenum);
             std::exit(EXIT_FAILURE);
