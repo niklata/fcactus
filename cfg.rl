@@ -2,6 +2,7 @@
 #include <cstring>
 #include <climits>
 #include <nk/string_replace_all.hpp>
+#include <nk/from_string.hpp>
 #include <nk/scopeguard.hpp>
 extern "C" {
 #include "nk/privilege.h"
@@ -171,10 +172,10 @@ static void parse_command_key(ParseCfgState &fas)
         fas.v_int = fas.v_int2 = 0;
         fas.intv2_exist = false;
     }
-    action IntValEn { fas.v_int = atoi(fas.intv_st); }
+    action IntValEn { fas.v_int = nk::from_string<int>(fas.intv_st, p - fas.intv_st); }
     action IntVal2St { fas.intv2_st = p; }
     action IntVal2En {
-        fas.v_int2 = atoi(fas.intv2_st);
+        fas.v_int2 = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st);
         fas.intv2_exist = true;
     }
 

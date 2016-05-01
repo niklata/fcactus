@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <sys/prctl.h>
 #include <nk/string_replace_all.hpp>
+#include <nk/from_string.hpp>
 #include <nk/optionarg.hpp>
 extern "C" {
 #include "nk/io.h"
@@ -284,7 +285,9 @@ static void process_options(int ac, char *av[])
     if (parse.error())
         std::exit(EXIT_FAILURE);
     if (options[OPT_HELP]) {
-        int col = getenv("COLUMNS") ? atoi(getenv("COLUMNS")) : 80;
+        uint16_t col{80};
+        const auto cols = getenv("COLUMNS");
+        if (cols) col = nk::from_string<uint16_t>(cols);
         option::printUsage(fwrite, stdout, usage, col);
         std::exit(EXIT_FAILURE);
     }
