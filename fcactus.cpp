@@ -16,7 +16,6 @@ extern "C" {
 #include "nk/io.h"
 #include "nk/exec.h"
 #include "nk/privilege.h"
-#include "nk/pidfile.h"
 }
 
 #define FCACTUS_VERSION "0.1"
@@ -25,9 +24,9 @@ extern "C" {
 
 static std::string g_fcactus_conf("/etc/fcactus.actions");
 
-static void fail_on_fdne(const std::string &file, const char *mode)
+static void fail_on_fdne(const std::string &file, int mode)
 {
-    if (file_exists(file.c_str(), mode))
+    if (access(file.c_str(), mode))
         exit(EXIT_FAILURE);
 }
 
@@ -306,7 +305,7 @@ static void process_options(int ac, char *av[])
 int main(int argc, char* argv[])
 {
     process_options(argc, argv);
-    fail_on_fdne(g_fcactus_conf, "r");
+    fail_on_fdne(g_fcactus_conf, R_OK);
 
     inotify inyfd;
 
