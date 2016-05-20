@@ -9,6 +9,7 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/prctl.h>
+#include <sys/timerfd.h>
 #include <nk/string_replace_all.hpp>
 #include <nk/from_string.hpp>
 #include <nk/optionarg.hpp>
@@ -18,9 +19,14 @@ extern "C" {
 #include "nk/privilege.h"
 }
 
-#define FCACTUS_VERSION "0.1"
+#define FCACTUS_VERSION "0.2"
 #define MAX_CENV 50
 #define MAX_ENVBUF 2048
+
+// Maps timerfds to inotify watch fds.
+static std::vector<std::pair<int, int>> debounce_rise_timers;
+
+static epollfd epfd;
 
 static std::string g_fcactus_conf("/etc/fcactus.actions");
 
@@ -143,7 +149,124 @@ static std::string mask_string(uint32_t mask)
     return acc;
 }
 
-void inotify::dispatch() {
+void inotify::dispatch_do(std::map<int, std::unique_ptr<watch_meta>>::iterator wmi,
+                 const struct inotify_event *event)
+{
+    // XXX: Not used for now.
+#if 0
+    const bool is_dir(!!(event->mask & IN_ISDIR));
+    const bool watch_del(!!(event->mask & IN_IGNORED));
+    const bool fs_unmounted(!!(event->mask & IN_UNMOUNT));
+    const bool buf_overflow(!!(event->mask & IN_Q_OVERFLOW));
+#endif
+
+    std::string args(wmi->second->args_);
+    string_replace_all(args, "$%", 2, mask_string(event->mask).c_str());
+    string_replace_all(args, "$&", 2, std::to_string(event->mask).c_str());
+    string_replace_all(args, "$#", 2, std::string(event->name).c_str());
+    string_replace_all(args, "$@", 2, wmi->second->filepath_.c_str());
+    string_replace_all(args, "$$", 2, "$"); // must be last
+
+    fmt::print("Event[{}]: exec '{} {}'\n", wmi->second->filepath_,
+               wmi->second->cmd_, args);
+    std::fflush(stdout);
+
+    wmi->second->exec(args);
+}
+
+void inotify::dispatch(const struct inotify_event *event)
+{
+    auto wmi = watches_.find(event->wd);
+    if (wmi == watches_.end()) {
+        fmt::print(stderr, "no job metadata for wd [{}]\n", event->wd);
+        return;
+    }
+
+    if (wmi->second->debounce_rise_ms_ > 0u) {
+        // We do not immediately execute the event.  Instead, we queue
+        // the event to be run only after debounce_rise_ms_ has passed with
+        // no events.  If an event does arrive before that time, then we
+        // reset the timer to wait again for debounce_rise_ms_.  This means
+        // that the event could possibly be deferred forever.
+        struct itimerspec its;
+        {
+            its.it_interval.tv_sec = 0;
+            its.it_interval.tv_nsec = 0;
+            const auto dbs = wmi->second->debounce_rise_ms_ / 1000u;
+            const auto dbr = wmi->second->debounce_rise_ms_ - (1000u * dbs);
+            its.it_value.tv_sec = dbs;
+            its.it_value.tv_nsec = dbr * 1000000u;
+        }
+        int timerfd = -1;
+        const auto end = debounce_rise_timers.end();
+        auto dbti = debounce_rise_timers.begin();
+        for (; dbti != end; ++dbti) {
+            if (dbti->second == event->wd) { timerfd = dbti->first; break; }
+        }
+        if (timerfd < 0) {
+            timerfd = timerfd_create(CLOCK_MONOTONIC, TFD_CLOEXEC | TFD_NONBLOCK);
+            if (timerfd < 0) {
+                fmt::print(stderr, "timerfd_create failed ({}); debouncing ignored\n",
+                           strerror(errno));
+                goto skip_debounce_rise;
+            }
+        }
+        if (timerfd_settime(timerfd, 0, &its, nullptr) < 0) {
+            if (dbti == end) {
+                fmt::print(stderr, "timerfd_settime failed ({}); debouncing ignored\n",
+                           strerror(errno));
+                close(timerfd);
+                goto skip_debounce_rise;
+            }
+            fmt::print(stderr, "timerfd_settime failed on existing timer ({})\n",
+                       strerror(errno));
+            return;
+        }
+        if (dbti == end) {
+            epfd.add(timerfd);
+            debounce_rise_timers.emplace_back(std::make_pair(timerfd, event->wd));
+        }
+        memcpy(&wmi->second->last_event_, event, sizeof wmi->second->last_event_);
+        return;
+    }
+skip_debounce_rise:
+
+    if (wmi->second->debounce_fall_ms_ > 0u) {
+        // We execute the event immediately (on the 'rising' edge).  Then we
+        // debounce the falling edge, ignoring events of the same kind until at least
+        // debounce_fall_ms_ has passed after the rising edge.  The event will
+        // never be deferred forever.
+        struct timespec ts;
+        if (clock_gettime(CLOCK_MONOTONIC, &ts) < 0) {
+            fmt::print(stderr, "clock_gettime failed ({}); debouncing ignored\n",
+                       strerror(errno));
+        } else {
+            size_t diff_s = ts.tv_sec - wmi->second->last_ran_ts_.tv_sec;
+            size_t diff_ms = (ts.tv_nsec - wmi->second->last_ran_ts_.tv_nsec) / 1000000u;
+            size_t tt = diff_s * 1000u;
+            if (tt >= diff_s) {
+                size_t diff_ms_sum = diff_ms + tt;
+                if (diff_ms_sum >= diff_ms && diff_ms < wmi->second->debounce_fall_ms_)
+                    return;
+            }
+            memcpy(&wmi->second->last_ran_ts_, &ts, sizeof wmi->second->last_ran_ts_);
+        }
+    }
+    dispatch_do(wmi, event);
+}
+
+void inotify::dispatch_debounce_rise_event(int fd)
+{
+    auto wmi = watches_.find(fd);
+    if (wmi == watches_.end()) {
+        fmt::print(stderr, "no job metadata for wd [{}]\n", fd);
+        return;
+    }
+    dispatch_do(wmi, &wmi->second->last_event_);
+}
+
+void inotify::dispatch()
+{
     char buf[4096] __attribute__((aligned(__alignof__(struct inotify_event))));
     const struct inotify_event *event;
 
@@ -155,33 +278,7 @@ void inotify::dispatch() {
     const size_t len(std::min(r, SSIZE_MAX));
     for (auto p = buf; p < buf + len; p += sizeof(struct inotify_event) + event->len) {
         event = reinterpret_cast<const struct inotify_event *>(p);
-
-        auto wmi = watches_.find(event->wd);
-        if (wmi == watches_.end()) {
-            fmt::print(stderr, "no job metadata for wd [{}]\n", event->wd);
-            continue;
-        }
-
-        // XXX: Not used for now.
-#if 0
-        const bool is_dir(!!(event->mask & IN_ISDIR));
-        const bool watch_del(!!(event->mask & IN_IGNORED));
-        const bool fs_unmounted(!!(event->mask & IN_UNMOUNT));
-        const bool buf_overflow(!!(event->mask & IN_Q_OVERFLOW));
-#endif
-
-        std::string args(wmi->second->args_);
-        string_replace_all(args, "$%", 2, mask_string(event->mask).c_str());
-        string_replace_all(args, "$&", 2, std::to_string(event->mask).c_str());
-        string_replace_all(args, "$#", 2, std::string(event->name).c_str());
-        string_replace_all(args, "$@", 2, wmi->second->filepath_.c_str());
-        string_replace_all(args, "$$", 2, "$"); // must be last
-
-        fmt::print("Event[{}]: exec '{} {}'\n", wmi->second->filepath_,
-                   wmi->second->cmd_, args);
-        std::fflush(stdout);
-
-        wmi->second->exec(args);
+        dispatch(event);
     }
 }
 
@@ -325,14 +422,13 @@ int main(int argc, char* argv[])
 #endif
 
     signal_fd sigfd;
-    epollfd epfd;
     struct epoll_event events[2];
 
     epfd.add(sigfd.fd());
     epfd.add(inyfd.fd());
 
     while (1) {
-        int nevents = epoll_wait(epfd.fd_, events, 2, -1);
+        int nevents = epoll_wait(epfd.fd_, events, 1, -1);
         if (nevents < 0) {
             if (errno == EINTR)
                 continue;
@@ -352,6 +448,25 @@ int main(int argc, char* argv[])
                     continue;
                 }
                 inyfd.dispatch();
+            } else {
+                bool found_timer{false};
+                const auto end = debounce_rise_timers.end();
+                for (auto j = debounce_rise_timers.begin(); j != end; ++j) {
+                    if (fd == j->first) {
+                        found_timer = true;
+                        if (!(events[i].events & EPOLLIN)) {
+                            fmt::print(stderr, "timerfd event that isn't IN\n");
+                            break;
+                        }
+                        epfd.del(j->first);
+                        close(j->first);
+                        inyfd.dispatch_debounce_rise_event(j->second);
+                        debounce_rise_timers.erase(j);
+                        break;
+                    }
+                }
+                if (!found_timer)
+                    throw std::runtime_error("event on unknown fd");
             }
         }
     }

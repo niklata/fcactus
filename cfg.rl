@@ -193,6 +193,7 @@ static void parse_command_key(ParseCfgState &fas)
         }
     }
 
+    intval = (digit+ >IntValSt %IntValEn);
     intrangeval = (digit+ > IntValSt % IntValEn)
                   (',' (digit+ > IntVal2St % IntVal2En))?;
     stringval = ([^\0\n]+ > StrValSt % StrValEn);
@@ -272,13 +273,25 @@ static void parse_command_key(ParseCfgState &fas)
     fopen = 'fopen'i % FOpenEn;
     fmove = 'fmove'i % FMoveEn;
 
+    action DebounceRiseEn {
+        fas.wm->debounce_rise_ms_ = fas.v_int;
+        fas.wm->debounce_fall_ms_ = 0;
+    }
+    action DebounceFallEn {
+        fas.wm->debounce_rise_ms_ = 0;
+        fas.wm->debounce_fall_ms_ = fas.v_int;
+    }
+    debounce_rise = 'debounce_rise'i eqsep intval %DebounceRiseEn;
+    debounce_fall = 'debounce_fall'i eqsep intval %DebounceFallEn;
+
     cmds = watch | command | chroot | path | user | group |
            faccess | fattrib | fclosewrite | fclosenowrite | fclose | fcreate |
            fdelete | fdeleteself | fmodify | fmoveself | fmovefrom | fmoveto |
            fopen | fmove |
            lim_cpu | lim_fsize | lim_data | lim_stack |
            lim_core | lim_rss | lim_nproc | lim_nofile | lim_memlock | lim_as |
-           lim_msgqueue | lim_nice | lim_rttime | lim_rtprio | lim_sigpending;
+           lim_msgqueue | lim_nice | lim_rttime | lim_rtprio | lim_sigpending |
+           debounce_rise | debounce_fall;
 
     action CreateJob { fas.finish_job(); fas.create_job(); }
 
