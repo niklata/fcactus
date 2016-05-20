@@ -41,7 +41,8 @@ Since ndhc by design does not run scripts, another program must perform any
 actions that are necessary when the DHCP-assigned IP address changes.
 
 fcactus is intended to perform this task by watching for fmodify events on the
-/etc/ndhc/LEASE-interface file.
+/etc/ndhc/LEASE-interface file.  debounce_rise should also be used with
+a reasonable value (around 2000-4000ms).
 
 Since there's no reason other than laziness to write a specific tool
 for a task when a general tool could also be written to perform the task
@@ -158,6 +159,22 @@ path = PATH_LIST
 Sets the PATH variable in environment of the spawned process to
 PATH_LIST.  The format of PATH_LIST should be identical of that
 used by shells (eg, path1:path2:path3).
+
+debounce_rise = TIME_IN_MILLISECONDS
+
+Instructs fcactus to wait until at least debounce_rise milliseconds
+have passed after the event before invoking the job.  If another
+event comes in before debounce_rise milliseconds have passed,
+the time to wait will be updated.  This means that the event
+could possibly be deferred forever.
+
+debounce_fall = TIME_IN_MILLISECONDS
+
+Instructs fcactus that after running the job, all events for the same job
+should be ignored until debounce_fall milliseconds have passed.  This
+means that if the events keep firing with an arbitrarily short interval,
+jobs will be run every debounce_fall milliseconds; they will not
+be deferred forever.
 
 The following keywords all enforce rlimits and have the same syntax;
 each of these keywords should be of the form "keyword = NUMBER0" or
