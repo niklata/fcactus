@@ -120,9 +120,9 @@ endif()
 
 include_directories("${PROJECT_SOURCE_DIR}"
                     "${PROJECT_SOURCE_DIR}/ncmlib"
-                    "${PROJECT_SOURCE_DIR}/cppformat")
+                    "${PROJECT_SOURCE_DIR}/fmt")
 add_subdirectory(ncmlib)
-add_subdirectory(cppformat)
+add_subdirectory(fmt)
 
 set(RAGEL_CFG ${CMAKE_CURRENT_BINARY_DIR}/cfg.cpp)
 
@@ -138,4 +138,4 @@ add_custom_command(
 
 file(GLOB FCACTUS_SRCS "*.cpp")
 add_executable(fcactus ${RAGEL_CFG} ${FCACTUS_SRCS})
-target_link_libraries(fcactus ncmlib cppformat)
+target_link_libraries(fcactus ncmlib fmt)

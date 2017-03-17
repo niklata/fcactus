@@ -10,7 +10,7 @@
 #include <sys/prctl.h>
 #include <sys/inotify.h>
 #include <time.h>
-#include <format.hpp>
+#include <fmt/format.h>
 #include "rlimit.hpp"
 
 struct watch_meta {
