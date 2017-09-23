@@ -4,15 +4,6 @@ Copyright (C) 2015-2017 Nicholas J. Kain.
 
 License: Two-clause BSD.
 
-## Requirements
-
-* Linux kernel
-* Ragel 6
-* CMake
-* [Ragel 6](https://www.colm.net/open-source/ragel)
-* [ncmlib](https://github.com/niklata/ncmlib)
-* [fmtlib](https://github.com/fmtlib/fmt)
-
 ## Introduction
 
 fcactus is a counterpart to ncron.  It invokes processes in response to
@@ -49,6 +40,15 @@ used with a reasonable value (around `2000`-`4000`ms).
 Since there's no reason other than laziness to write a specific tool
 for a task when a general tool could also be written to perform the task
 with a little bit more effort, I have written a general purpose tool.
+
+## Requirements
+
+* Linux kernel
+* GCC or Clang
+* CMake
+* [Ragel 6](https://www.colm.net/open-source/ragel)
+* [ncmlib](https://github.com/niklata/ncmlib)
+* [fmtlib](https://github.com/fmtlib/fmt)
 
 ## Installation
 
@@ -109,14 +109,10 @@ substitution syntax that is shared with incron for command arguments
 incron or read its source code):
 
 |  SYMBOL         |  IS REPLACED WITH
-|-----------------|-------------------------------------------------------------------
-|  `$#`           | if the watched filepath is a directory and the event was triggered
-|                 | by an event on a file in that directory, then this symbol will
-|                 | be replaced with the name of that file; otherwise it will be
-|                 | empty
+|-----------------|----------------------------------------------------------
+|  `$#`           | if the watched filepath is a directory and the event was triggered by an event on a file in that directory, then this symbol will be replaced with the name of that file; otherwise it will be empty
 |  `$@`           | the path to the watched file or directory that raised the event
-|  `$%`           | the symbolic names of the inotify flags set in the event,
-|                 | delimited by commas
+|  `$%`           | the symbolic names of the inotify flags set in the event, delimited by commas
 |  `$&`           | the numerical value of the inotify flags set in the event
 |  `$$`           | `$`
 
