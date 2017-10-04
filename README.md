@@ -218,6 +218,7 @@ to the permission restrictions of the user.
 
 ## Downloads
 
-* [GitLab](https://github.com/niklata/fcactus)
-* [BitBucket](https://gitlab.com/niklata/fcactus)
-* [GitHub](https://bitbucket.com/niklata/fcactus)
+* [GitLab](https://gitlab.com/niklata/fcactus)
+* [BitBucket](https://bitbucket.com/niklata/fcactus)
+* [GitHub](https://github.com/niklata/fcactus)
+
