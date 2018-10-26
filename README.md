@@ -1,6 +1,6 @@
 # fcactus
 
-Copyright (C) 2015-2017 Nicholas J. Kain.
+Copyright 2015-2017 Nicholas J. Kain.
 
 License: Two-clause BSD.
 

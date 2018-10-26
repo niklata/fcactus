@@ -328,7 +328,7 @@ void signal_fd::dispatch(void)
 static void print_version(void)
 {
     fmt::print("fcactus " FCACTUS_VERSION ", inotify action daemon.\n"
-               "Copyright (c) 2015-2016 Nicholas J. Kain\n"
+               "Copyright 2015-2016 Nicholas J. Kain\n"
                "All rights reserved.\n\n"
                "Redistribution and use in source and binary forms, with or without\n"
                "modification, are permitted provided that the following conditions are met:\n\n"
@@ -356,7 +356,7 @@ enum OpIdx {
 static const option::Descriptor usage[] = {
     { OPT_UNKNOWN,    0,  "",           "", Arg::Unknown,
         "fcactus " FCACTUS_VERSION ", inotify action daemon.\n"
-        "Copyright (c) 2015-2016 Nicholas J. Kain\n"
+        "Copyright 2015-2016 Nicholas J. Kain\n"
         "fcactus [options]...\n\nOptions:" },
     { OPT_HELP,       0, "h",            "help",    Arg::None, "\t-h, \t--help  \tPrint usage and exit." },
     { OPT_VERSION,    0, "v",         "version",    Arg::None, "\t-v, \t--version  \tPrint version and exit." },
