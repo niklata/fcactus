@@ -289,7 +289,7 @@ signal_fd::signal_fd() {
     sigaddset(&mask, SIGHUP);
     sigaddset(&mask, SIGINT);
     sigaddset(&mask, SIGTERM);
-    if (sigprocmask(SIG_BLOCK, &mask, NULL) < 0)
+    if (sigprocmask(SIG_BLOCK, &mask, nullptr) < 0)
         throw std::runtime_error("sigprocmask failed\n");
     fd_ = signalfd(-1, &mask, SFD_NONBLOCK | SFD_CLOEXEC);
     if (fd_ < 0)
@@ -314,7 +314,7 @@ void signal_fd::dispatch(void)
     switch (si.ssi_signo) {
         case SIGHUP: signame = 0; break;
         case SIGCHLD:
-            while (waitpid(-1, NULL, WNOHANG) > 0);
+            while (waitpid(-1, nullptr, WNOHANG) > 0);
             return;
         case SIGTERM: signame = 1; break;
         case SIGINT: signame = 2; break;
