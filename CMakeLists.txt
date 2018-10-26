@@ -1,6 +1,11 @@
-project (fcactus)
+cmake_minimum_required(VERSION 3.3)
+if(${CMAKE_VERSION} VERSION_LESS 3.12)
+  cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
+else()
+  cmake_policy(VERSION 3.12)
+endif()
 
-cmake_minimum_required (VERSION 2.6)
+project(fcactus DESCRIPTION "file event reactor" LANGUAGES CXX C)
 
 ####################################
 
@@ -77,8 +82,8 @@ ENDMACRO(COMPARE_VERSION_STRINGS)
 
 ####################################
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -std=gnu99 -fno-strict-overflow -Wall -Wextra -Wimplicit-fallthrough=0 -Wno-maybe-uninitialized -Wformat=2 -Wformat-nonliteral -Wformat-security -Wpointer-arith -Wno-unused-parameter")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=gnu++14 -fno-strict-overflow -Wall -Wextra -Wimplicit-fallthrough=0 -Wno-maybe-uninitialized -Wformat-security -Wpointer-arith -Wno-unused-parameter")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -fno-strict-overflow -pedantic -Wall -Wextra -Wimplicit-fallthrough=0 -Wformat=2 -Wformat-nonliteral -Wformat-security -Wshadow -Wpointer-arith -Wmissing-prototypes -Wcast-qual -Wsign-conversion")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++17 -fno-strict-overflow -fno-rtti -Wall -Wextra -Wimplicit-fallthrough=0  -Wformat-security -Wpointer-arith")
 
 if (WIN32)
   set(OSNAME "Win32")
@@ -118,9 +123,6 @@ if (${OSNAME} STREQUAL "Linux")
   endif()
 endif()
 
-include_directories("${PROJECT_SOURCE_DIR}"
-                    "${PROJECT_SOURCE_DIR}/ncmlib"
-                    "${PROJECT_SOURCE_DIR}/fmt")
 add_subdirectory(ncmlib)
 add_subdirectory(fmt)
 
@@ -136,6 +138,14 @@ add_custom_command(
   VERBATIM
   )
 
-file(GLOB FCACTUS_SRCS "*.cpp")
-add_executable(fcactus ${RAGEL_CFG} ${FCACTUS_SRCS})
-target_link_libraries(fcactus ncmlib fmt)
+add_executable(fcactus ${RAGEL_CFG})
+target_sources(fcactus PRIVATE
+  "fcactus.cpp"
+  "rlimit.cpp"
+)
+target_include_directories(fcactus PRIVATE
+  "${PROJECT_SOURCE_DIR}"
+  "${PROJECT_SOURCE_DIR}/ncmlib"
+  "${PROJECT_SOURCE_DIR}/fmt"
+)
+target_link_libraries(fcactus PUBLIC ncmlib fmt)
