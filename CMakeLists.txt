@@ -137,6 +137,10 @@ add_custom_command(
   COMMENT "Compiling Ragel state machine: cfg.rl"
   VERBATIM
   )
+set_property(SOURCE ${RAGEL_CFG} APPEND PROPERTY GENERATED TRUE)
+if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  set_property(SOURCE ${RAGEL_CFG} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-unused-const-variable")
+endif()
 
 add_executable(fcactus ${RAGEL_CFG})
 target_sources(fcactus PRIVATE
