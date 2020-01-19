@@ -101,7 +101,7 @@ void epollfd::manip(int fd, int mtype) {
     ev.data.fd = fd;
     int r = epoll_ctl(fd_, mtype, fd, &ev);
     if (r < 0)
-        throw std::runtime_error(fmt::format("epoll_ctl failed {}", strerror(errno)));
+        suicide("epoll_ctl failed: %s", strerror(errno));
 }
 
 std::pair<bool, int> inotify::add(std::unique_ptr<watch_meta> &&meta) {
@@ -272,7 +272,7 @@ void inotify::dispatch()
 
     auto r = safe_read(inotify_fd_.fd_, buf, sizeof buf);
     if (r == -1)
-        throw std::runtime_error("inotifyfd::dispatch: read failed");
+        suicide("inotifyfd::dispatch: read failed: %s", strerror(errno));
     if (r == 0)
         return;
     const size_t len(std::min(r, SSIZE_MAX));
@@ -290,10 +290,10 @@ signal_fd::signal_fd() {
     sigaddset(&mask, SIGINT);
     sigaddset(&mask, SIGTERM);
     if (sigprocmask(SIG_BLOCK, &mask, nullptr) < 0)
-        throw std::runtime_error("sigprocmask failed\n");
+        suicide("sigprocmask failed: %s", strerror(errno));
     fd_ = signalfd(-1, &mask, SFD_NONBLOCK | SFD_CLOEXEC);
     if (fd_ < 0)
-        throw std::runtime_error(fmt::format("Failed to create signal_fd fd: {}", fd_));
+        suicide("Failed to create signal_fd fd: %s", strerror(errno));
 }
 
 void signal_fd::dispatch(void)
@@ -433,7 +433,7 @@ int main(int argc, char* argv[])
         if (nevents < 0) {
             if (errno == EINTR)
                 continue;
-            throw std::runtime_error(fmt::format("epoll_wait failed: {}", nevents));
+            suicide("epoll_wait failed: %s", strerror(errno));
         }
         for (int i = 0; i < nevents; ++i) {
             int fd = events[i].data.fd;
@@ -467,7 +467,7 @@ int main(int argc, char* argv[])
                     }
                 }
                 if (!found_timer)
-                    throw std::runtime_error("event on unknown fd");
+                    suicide("event on unknown fd");
             }
         }
     }

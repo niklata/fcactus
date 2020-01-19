@@ -84,13 +84,7 @@ struct ParseCfgState {
         struct rlimit rli;
         rli.rlim_cur = v_int == 0 ? RLIM_INFINITY : v_int;
         rli.rlim_max = v_int2 == 0 ? RLIM_INFINITY : v_int2;
-
-        try {
-            wm->limits_.add(type, rli);
-        } catch (const std::logic_error&) {
-            fmt::print(stderr, "{}: Bad RLIMIT_type specified.\n", __func__);
-            std::exit(EXIT_FAILURE);
-        }
+        wm->limits_.add(type, rli);
     }
 
 };

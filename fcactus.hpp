@@ -12,6 +12,9 @@
 #include <time.h>
 #include <fmt/format.h>
 #include "rlimit.hpp"
+extern "C" {
+#include "nk/log.h"
+}
 
 struct watch_meta {
     watch_meta() : eventflags_(0), debounce_rise_ms_(0u), debounce_fall_ms_(0u),
@@ -42,7 +45,7 @@ struct inotifyfd
     inotifyfd() {
         fd_ = inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
         if (fd_ < 0)
-            throw std::runtime_error(fmt::format("Failed to create inotify fd: {}", fd_));
+            suicide("Failed to create inotify fd: %s", strerror(errno));
     }
     ~inotifyfd() { close(fd_); }
     inotifyfd(const inotifyfd &) = delete;
@@ -57,7 +60,7 @@ struct epollfd
     epollfd() {
         fd_ = epoll_create1(EPOLL_CLOEXEC);
         if (fd_ < 0)
-            throw std::runtime_error(fmt::format("Failed to create epoll fd: {}", fd_));
+            suicide("Failed to create epoll fd: %s", strerror(errno));
     }
     ~epollfd() { close(fd_); }
     epollfd(const epollfd &) = delete;
