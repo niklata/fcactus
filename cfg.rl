@@ -172,10 +172,18 @@ static void parse_command_key(ParseCfgState &fas)
         fas.v_int = fas.v_int2 = 0;
         fas.intv2_exist = false;
     }
-    action IntValEn { fas.v_int = nk::from_string<int>(fas.intv_st, p - fas.intv_st); }
+    action IntValEn {
+        if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
+            fmt::print(stderr, "invalid value where integer is expected on line {}\n", fas.linenum);
+            std::exit(EXIT_FAILURE);
+        }
+    }
     action IntVal2St { fas.intv2_st = p; }
     action IntVal2En {
-        fas.v_int2 = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st);
+        if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
+            fmt::print(stderr, "invalid value where second integer in range is expected on line {}\n", fas.linenum);
+            std::exit(EXIT_FAILURE);
+        }
         fas.intv2_exist = true;
     }
 
