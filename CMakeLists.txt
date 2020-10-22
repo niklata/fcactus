@@ -126,24 +126,41 @@ endif()
 add_subdirectory(ncmlib)
 add_subdirectory(fmt)
 
-set(RAGEL_CFG ${CMAKE_CURRENT_BINARY_DIR}/cfg.cpp)
+add_executable(fcactus "")
 
 find_program(RAGEL ragel)
-add_custom_command(
-  OUTPUT ${RAGEL_CFG}
-  COMMAND ${RAGEL} -G2 -o ${RAGEL_CFG} cfg.rl
-  DEPENDS cfg.rl
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  COMMENT "Compiling Ragel state machine: cfg.rl"
-  VERBATIM
-  )
-set_property(SOURCE ${RAGEL_CFG} APPEND PROPERTY GENERATED TRUE)
-if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  set_property(SOURCE ${RAGEL_CFG} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-unused-const-variable")
-endif()
 
-add_executable(fcactus ${RAGEL_CFG})
+set(RAGEL_PRINT_COMMENT "Compiling Ragel state machine: FILE")
+file(GLOB_RECURSE RAGEL_FILES
+  "cfg.rl"
+  )
+foreach(RAGEL_FILE ${RAGEL_FILES})
+  string(REGEX REPLACE "^[^/]*[/]" "" RAGEL_FILE_BASE ${RAGEL_FILE})
+  string(REGEX REPLACE ${RAGEL_FILE_BASE} "" RAGEL_FILE_PATH ${RAGEL_FILE})
+  string(REGEX REPLACE "[.]rl$" ".cpp" RAGEL_FILE_CPP ${RAGEL_FILE_BASE})
+  string(REGEX REPLACE "FILE$" ${RAGEL_FILE_BASE} RAGEL_COMMENT ${RAGEL_PRINT_COMMENT})
+  set(RAGEL_FILE_CPP_OUT ${CMAKE_CURRENT_BINARY_DIR}/${RAGEL_FILE_CPP})
+  list(APPEND RAGEL_CPP_FILES ${RAGEL_FILE_CPP_OUT})
+  add_custom_command(
+    OUTPUT ${RAGEL_FILE_CPP_OUT}
+    COMMAND ${RAGEL} -T0 ${RAGEL_ERRFMT_ARG} -o ${RAGEL_FILE_CPP_OUT} ${RAGEL_FILE_BASE}
+    MAIN_DEPENDENCY ${RAGEL_FILE}
+    WORKING_DIRECTORY ${RAGEL_FILE_PATH}
+    COMMENT ${RAGEL_COMMENT}
+    VERBATIM
+    )
+  set_property(SOURCE ${RAGEL_FILE_CPP_OUT} APPEND PROPERTY GENERATED TRUE)
+  if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set_property(SOURCE ${RAGEL_FILE_CPP_OUT} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-unused-const-variable")
+  endif()
+  set_source_files_properties(${RAGEL_FILE_CPP_OUT} PROPERTIES GENERATED true)
+  target_sources(fcactus PRIVATE ${RAGEL_FILE_CPP_OUT})
+endforeach(RAGEL_FILE)
+add_custom_target(fcactus_ragel DEPENDS ${RAGEL_CPP_FILES})
+add_dependencies(fcactus fcactus_ragel)
+
 target_sources(fcactus PRIVATE
+  ${RAGEL_CPP_FILES}
   "fcactus.cpp"
   "rlimit.cpp"
 )
