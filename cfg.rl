@@ -5,7 +5,7 @@
 #include <nk/from_string.hpp>
 #include <nk/scopeguard.hpp>
 extern "C" {
-#include "nk/privilege.h"
+#include "nk/privs.h"
 }
 
 #define MAX_LINE 2048

@@ -16,7 +16,7 @@
 extern "C" {
 #include "nk/io.h"
 #include "nk/exec.h"
-#include "nk/privilege.h"
+#include "nk/privs.h"
 }
 
 #define FCACTUS_VERSION "0.2"
