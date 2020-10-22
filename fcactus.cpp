@@ -4,7 +4,6 @@
 #include <climits>
 #include <errno.h>
 #include <signal.h>
-#include <sys/signalfd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
@@ -282,47 +281,46 @@ void inotify::dispatch()
     }
 }
 
-signal_fd::signal_fd() {
-    sigset_t mask;
-    sigemptyset(&mask);
-    sigaddset(&mask, SIGCHLD);
-    sigaddset(&mask, SIGHUP);
-    sigaddset(&mask, SIGINT);
-    sigaddset(&mask, SIGTERM);
-    if (sigprocmask(SIG_BLOCK, &mask, nullptr) < 0)
-        suicide("sigprocmask failed: %s", strerror(errno));
-    fd_ = signalfd(-1, &mask, SFD_NONBLOCK | SFD_CLOEXEC);
-    if (fd_ < 0)
-        suicide("Failed to create signal_fd fd: %s", strerror(errno));
+static void signal_handler(int signo)
+{
+    switch (signo) {
+    case SIGCHLD: while (waitpid(-1, nullptr, WNOHANG) > 0); break;
+    case SIGINT:
+    case SIGTERM: {
+        static const char errstr[] = "Got terminating signal: exiting.\n";
+        safe_write(STDOUT_FILENO, errstr, sizeof errstr - 1);
+        _exit(EXIT_FAILURE);
+        break;
+    }
+    default: break;
+    }
 }
 
-void signal_fd::dispatch(void)
+static void setup_signals_fcactus()
 {
-    struct signalfd_siginfo si;
-    memset(&si, 0, sizeof si);
-    ssize_t r = safe_read(fd_, (char *)&si, sizeof si);
-    if (r < 0) {
-        fmt::print(stderr, "error reading from signalfd: {}", strerror(errno));
-        return;
-    }
-    if ((size_t)r < sizeof si) {
-        fmt::print(stderr, "short read from signalfd: {} < {}\n", r, sizeof si);
-        return;
-    }
-    static const char *signames[] = { "HUP", "TERM", "INT" };
-    unsigned signame = 0;
-    switch (si.ssi_signo) {
-        case SIGHUP: signame = 0; break;
-        case SIGCHLD:
-            while (waitpid(-1, nullptr, WNOHANG) > 0);
-            return;
-        case SIGTERM: signame = 1; break;
-        case SIGINT: signame = 2; break;
-        default: return;
-    }
-    fmt::print("Received SIG{}.  Exiting gracefully.\n", signames[signame]);
-    std::fflush(stdout);
-    exit(EXIT_SUCCESS);
+    static const int ss[] = {
+        SIGCHLD, SIGINT, SIGTERM, SIGHUP, SIGKILL
+    };
+    sigset_t mask;
+
+    if (sigprocmask(0, 0, &mask) < 0)
+        suicide("sigprocmask failed");
+    for (int i = 0; ss[i] != SIGKILL; ++i)
+        if (sigdelset(&mask, ss[i]))
+            suicide("sigdelset failed");
+    if (sigaddset(&mask, SIGPIPE))
+        suicide("sigaddset failed");
+    if (sigprocmask(SIG_SETMASK, &mask, (sigset_t *)0) < 0)
+        suicide("sigprocmask failed");
+
+    struct sigaction sa;
+    sa.sa_handler = signal_handler;
+    sa.sa_flags = SA_RESTART;
+    if (sigemptyset(&sa.sa_mask))
+        suicide("sigemptyset failed");
+    for (int i = 0; ss[i] != SIGKILL; ++i)
+        if (sigaction(ss[i], &sa, NULL))
+            suicide("sigaction failed");
 }
 
 static void print_version(void)
@@ -415,6 +413,7 @@ int main(int argc, char* argv[])
     }
 
     umask(077);
+    setup_signals_fcactus();
 
 #ifdef __linux__
     prctl(PR_SET_DUMPABLE, 0, 0, 0, 0);
@@ -422,10 +421,8 @@ int main(int argc, char* argv[])
     prctl(PR_SET_CHILD_SUBREAPER, 1, 0, 0, 0);
 #endif
 
-    signal_fd sigfd;
     struct epoll_event events[2];
 
-    epfd.add(sigfd.fd());
     epfd.add(inyfd.fd());
 
     while (1) {
@@ -437,13 +434,7 @@ int main(int argc, char* argv[])
         }
         for (int i = 0; i < nevents; ++i) {
             int fd = events[i].data.fd;
-            if (fd == sigfd.fd()) {
-                if (!(events[i].events & EPOLLIN)) {
-                    fmt::print(stderr, "sigfd event that isn't IN\n");
-                    continue;
-                }
-                sigfd.dispatch();
-            } else if (fd == inyfd.fd()) {
+            if (fd == inyfd.fd()) {
                 if (!(events[i].events & EPOLLIN)) {
                     fmt::print(stderr, "inyfd event that isn't IN\n");
                     continue;

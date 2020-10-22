@@ -6,7 +6,6 @@
 #include <map>
 #include <unistd.h>
 #include <sys/epoll.h>
-#include <sys/signalfd.h>
 #include <sys/prctl.h>
 #include <sys/inotify.h>
 #include <time.h>
@@ -87,19 +86,6 @@ struct inotify
 private:
     void dispatch_do(std::map<int, std::unique_ptr<watch_meta>>::iterator wmi,
                      const struct inotify_event *event);
-};
-
-struct signal_fd
-{
-    signal_fd();
-    ~signal_fd() { close(fd_); }
-    signal_fd(const signal_fd &) = delete;
-    signal_fd(signal_fd &&) = delete;
-    signal_fd& operator=(const signal_fd &) = delete;
-    signal_fd& operator=(signal_fd &&) = delete;
-    void dispatch(void);
-    int fd() const { return fd_; }
-    int fd_;
 };
 
 #endif
