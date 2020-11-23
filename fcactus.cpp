@@ -20,7 +20,7 @@ extern "C" {
 
 #define FCACTUS_VERSION "0.2"
 #define MAX_CENV 50
-#define MAX_ENVBUF 2048
+#define MAX_ENVBUF 16384
 
 // Maps timerfds to inotify watch fds.
 static std::vector<std::pair<int, int>> debounce_rise_timers;
@@ -45,45 +45,61 @@ void watch_meta::exec(const std::string &args)
     char envbuf[MAX_ENVBUF];
     switch ((int)fork()) {
     case 0:
-        if (nk_generate_env(user_, chroot_.empty() ? nullptr : chroot_.c_str(),
-                            path_.empty() ? nullptr : path_.c_str(),
-                            env, MAX_CENV, envbuf, sizeof envbuf) < 0) {
-            const char errstr[] = "watch_meta::exec: failed to generate environment\n";
-            write(STDERR_FILENO, errstr, sizeof errstr);
-            std::exit(EXIT_FAILURE);
+        {
+            int r = nk_generate_env(user_, chroot_.empty() ? nullptr : chroot_.c_str(),
+                                    path_.empty() ? nullptr : path_.c_str(),
+                                    env, MAX_CENV, envbuf, sizeof envbuf);
+            if (r < 0) {
+                static const char errstr[] = "exec: failed to generate environment - ";
+                write(STDERR_FILENO, errstr, sizeof errstr);
+                static const char errstr0[] = "(?) unknown error";
+                static const char errstr1[] = "(-1) account for uid does not exist";
+                static const char errstr2[] = "(-2) not enough space in envbuf";
+                static const char errstr3[] = "(-3) not enough space in env";
+                static const char errstr4[] = "(-4) chdir to homedir or rootdir failed";
+                switch (r) {
+                default: write(STDERR_FILENO, errstr0, sizeof errstr0); break;
+                case -1: write(STDERR_FILENO, errstr1, sizeof errstr1); break;
+                case -2: write(STDERR_FILENO, errstr2, sizeof errstr2); break;
+                case -3: write(STDERR_FILENO, errstr3, sizeof errstr3); break;
+                case -4: write(STDERR_FILENO, errstr4, sizeof errstr4); break;
+                }
+                write(STDERR_FILENO, "\n", 1);
+                std::exit(EXIT_FAILURE);
+            }
         }
         if (limits_.exist() && limits_.enforce(user_, group_, cmd_)) {
-            const char errstr[] = "watch_meta::exec: rlimits::enforce failed\n";
+            static const char errstr[] = "watch_meta::exec: rlimits::enforce failed\n";
             write(STDERR_FILENO, errstr, sizeof errstr);
             std::exit(EXIT_FAILURE);
         }
         if (group_) {
             if (setresgid(group_, group_, group_)) {
-                const char errstr[] = "watch_meta::exec: setresgid failed\n";
+                static const char errstr[] = "watch_meta::exec: setresgid failed\n";
                 write(STDERR_FILENO, errstr, sizeof errstr);
                 std::exit(EXIT_FAILURE);
             }
             if (getgid() == 0) {
-                const char errstr[] = "watch_meta::exec: child is still gid=root after setgid()\n";
+                static const char errstr[] = "watch_meta::exec: child is still gid=root after setgid()\n";
                 write(STDERR_FILENO, errstr, sizeof errstr);
                 std::exit(EXIT_FAILURE);
             }
         }
         if (user_) {
             if (setresuid(user_, user_, user_)) {
-                const char errstr[] = "watch_meta::exec: setresuid failed\n";
+                static const char errstr[] = "watch_meta::exec: setresuid failed\n";
                 write(STDERR_FILENO, errstr, sizeof errstr);
                 std::exit(EXIT_FAILURE);
             }
             if (getuid() == 0) {
-                const char errstr[] = "watch_meta::exec: child is still uid=root after setuid()\n";
+                static const char errstr[] = "watch_meta::exec: child is still uid=root after setuid()\n";
                 write(STDERR_FILENO, errstr, sizeof errstr);
                 std::exit(EXIT_FAILURE);
             }
         }
         nk_execute(cmd_.c_str(), args.c_str(), env);
     case -1: {
-        const char errstr[] = "watch_meta::exec: fork failed\n";
+        static const char errstr[] = "watch_meta::exec: fork failed\n";
         write(STDERR_FILENO, errstr, sizeof errstr);
         std::exit(EXIT_FAILURE);
     }
