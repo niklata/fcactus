@@ -9,9 +9,9 @@
 #include <sys/stat.h>
 #include <sys/prctl.h>
 #include <sys/timerfd.h>
+#include <getopt.h>
 #include <nk/string_replace_all.hpp>
 #include <nk/from_string.hpp>
-#include <nk/optionarg.hpp>
 extern "C" {
 #include "nk/io.h"
 #include "nk/exec.h"
@@ -338,6 +338,17 @@ static void setup_signals_fcactus()
             suicide("sigaction failed");
 }
 
+static void usage()
+{
+    printf("fcactus " FCACTUS_VERSION ", inotify action daemon.\n"
+           "Copyright 2003-2022 Nicholas J. Kain\n"
+           "Usage: fcactus [options]...\n\nOptions:\n"
+           "--help         -h    Print usage and exit.\n"
+           "--version      -v    Print version and exit.\n"
+           "--crontab      -c [] Path to configuration file.\n"
+    );
+}
+
 static void print_version(void)
 {
     log_line("fcactus " FCACTUS_VERSION ", inotify action daemon.\n"
@@ -363,53 +374,23 @@ static void print_version(void)
              "POSSIBILITY OF SUCH DAMAGE.");
 }
 
-enum OpIdx {
-    OPT_UNKNOWN, OPT_HELP, OPT_VERSION, OPT_CONFIG
-};
-static const option::Descriptor usage[] = {
-    { OPT_UNKNOWN,    0,  "",           "", Arg::Unknown,
-        "fcactus " FCACTUS_VERSION ", inotify action daemon.\n"
-        "Copyright 2015-2022 Nicholas J. Kain\n"
-        "fcactus [options]...\n\nOptions:" },
-    { OPT_HELP,       0, "h",            "help",    Arg::None, "\t-h, \t--help  \tPrint usage and exit." },
-    { OPT_VERSION,    0, "v",         "version",    Arg::None, "\t-v, \t--version  \tPrint version and exit." },
-    { OPT_CONFIG,     0, "c",          "config",  Arg::String, "\t-c, \t--config  \tPath to configuration file." },
-    {0,0,0,0,0,0}
-};
 static void process_options(int ac, char *av[])
 {
-    ac-=ac>0; av+=ac>0;
-    option::Stats stats(usage, ac, av);
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wvla"
-    option::Option options[stats.options_max], buffer[stats.buffer_max];
-#pragma GCC diagnostic pop
-    option::Parser parse(usage, ac, av, options, buffer);
-#else
-    auto options = std::make_unique<option::Option[]>(stats.options_max);
-    auto buffer = std::make_unique<option::Option[]>(stats.buffer_max);
-    option::Parser parse(usage, ac, av, options.get(), buffer.get());
-#endif
-    if (parse.error())
-        std::exit(EXIT_FAILURE);
-    if (options[OPT_HELP]) {
-        uint16_t col{80};
-        if (const auto cols = getenv("COLUMNS")) {
-            if (auto t = nk::from_string<uint16_t>(cols)) col = *t;
+    static struct option long_options[] = {
+        {"help", 0, (int *)0, 'h'},
+        {"version", 0, (int *)0, 'v'},
+        {"config", 1, (int *)0, 'c'},
+        {(const char *)0, 0, (int *)0, 0 }
+    };
+    for (;;) {
+        auto c = getopt_long(ac, av, "hvc:", long_options, (int *)0);
+        if (c == -1) break;
+        switch (c) {
+            case 'h': usage(); std::exit(EXIT_SUCCESS); break;
+            case 'v': print_version(); std::exit(EXIT_SUCCESS); break;
+            case 'c': g_fcactus_conf = optarg; break;
+            default: break;
         }
-        option::printUsage(fwrite, stdout, usage, col);
-        std::exit(EXIT_FAILURE);
-    }
-    if (options[OPT_VERSION]) {
-        print_version();
-        std::exit(EXIT_FAILURE);
-    }
-
-    for (int i = 0; i < parse.optionsCount(); ++i) {
-        option::Option &opt = buffer[i];
-        if (opt.index() == OPT_CONFIG)
-            g_fcactus_conf = std::string(opt.arg);
     }
 }
 
