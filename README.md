@@ -1,6 +1,6 @@
 # fcactus
 
-Copyright 2015-2017 Nicholas J. Kain.
+Copyright 2015-2022 Nicholas J. Kain.
 
 License: Two-clause BSD.
 
@@ -45,15 +45,12 @@ with a little bit more effort, I have written a general purpose tool.
 
 * Linux kernel
 * GCC or Clang
-* CMake
-* [Ragel](https://www.colm.net/open-source/ragel)
+* GNU Make
+* For developers: [Ragel](https://www.colm.net/open-source/ragel)
 
 ## Installation
 
 ```
-$ mkdir build
-$ cd build
-$ cmake ..
 $ make
 $ su
 $ cp fcactus /usr/local/bin
