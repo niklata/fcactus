@@ -122,8 +122,8 @@ void epollfd::manip(int fd, int mtype) {
 std::pair<bool, int> inotify::add(std::unique_ptr<watch_meta> &&meta) {
     int fdt = inotify_add_watch(inotify_fd_.fd_, meta->filepath_.c_str(), meta->eventflags_);
     if (fdt < 0) {
-        fmt::print(stderr, "Failed to set watch [{}][{}]: {}\n", meta->filepath_,
-                   meta->eventflags_, strerror(errno));
+        log_line("Failed to set watch [%s][%d]: %s", meta->filepath_.c_str(),
+                 meta->eventflags_, strerror(errno));
         return std::make_pair(false, fdt);
     }
     watches_.emplace(std::make_pair(fdt, std::move(meta)));
@@ -182,8 +182,8 @@ void inotify::dispatch_do(std::map<int, std::unique_ptr<watch_meta>>::iterator w
     string_replace_all(args, "$@", 2, wmi->second->filepath_.c_str());
     string_replace_all(args, "$$", 2, "$"); // must be last
 
-    fmt::print("Event[{}]: exec '{} {}'\n", wmi->second->filepath_,
-               wmi->second->cmd_, args);
+    log_line("Event[%s]: exec '%s %s'", wmi->second->filepath_.c_str(),
+             wmi->second->cmd_.c_str(), args.c_str());
     std::fflush(stdout);
 
     wmi->second->exec(args);
@@ -193,7 +193,7 @@ void inotify::dispatch(const struct inotify_event *event)
 {
     auto wmi = watches_.find(event->wd);
     if (wmi == watches_.end()) {
-        fmt::print(stderr, "no job metadata for wd [{}]\n", event->wd);
+        log_line("no job metadata for wd [%d]", event->wd);
         return;
     }
 
@@ -221,20 +221,20 @@ void inotify::dispatch(const struct inotify_event *event)
         if (timerfd < 0) {
             timerfd = timerfd_create(CLOCK_MONOTONIC, TFD_CLOEXEC | TFD_NONBLOCK);
             if (timerfd < 0) {
-                fmt::print(stderr, "timerfd_create failed ({}); debouncing ignored\n",
-                           strerror(errno));
+                log_line("timerfd_create failed (%s); debouncing ignored",
+                         strerror(errno));
                 goto skip_debounce_rise;
             }
         }
         if (timerfd_settime(timerfd, 0, &its, nullptr) < 0) {
             if (dbti == end) {
-                fmt::print(stderr, "timerfd_settime failed ({}); debouncing ignored\n",
-                           strerror(errno));
+                log_line("timerfd_settime failed (%s); debouncing ignored",
+                         strerror(errno));
                 close(timerfd);
                 goto skip_debounce_rise;
             }
-            fmt::print(stderr, "timerfd_settime failed on existing timer ({})\n",
-                       strerror(errno));
+            log_line("timerfd_settime failed on existing timer (%s)",
+                     strerror(errno));
             return;
         }
         if (dbti == end) {
@@ -253,8 +253,7 @@ skip_debounce_rise:
         // never be deferred forever.
         struct timespec ts;
         if (clock_gettime(CLOCK_MONOTONIC, &ts) < 0) {
-            fmt::print(stderr, "clock_gettime failed ({}); debouncing ignored\n",
-                       strerror(errno));
+            log_line("clock_gettime failed (%s); debouncing ignored", strerror(errno));
         } else {
             size_t diff_s = ts.tv_sec - wmi->second->last_ran_ts_.tv_sec;
             size_t diff_ms = (ts.tv_nsec - wmi->second->last_ran_ts_.tv_nsec) / 1000000u;
@@ -274,7 +273,7 @@ void inotify::dispatch_debounce_rise_event(int fd)
 {
     auto wmi = watches_.find(fd);
     if (wmi == watches_.end()) {
-        fmt::print(stderr, "no job metadata for wd [{}]\n", fd);
+        log_line("no job metadata for wd [%d]", fd);
         return;
     }
     dispatch_do(wmi, &wmi->second->last_event_);
@@ -341,27 +340,27 @@ static void setup_signals_fcactus()
 
 static void print_version(void)
 {
-    fmt::print("fcactus " FCACTUS_VERSION ", inotify action daemon.\n"
-               "Copyright 2015-2016 Nicholas J. Kain\n"
-               "All rights reserved.\n\n"
-               "Redistribution and use in source and binary forms, with or without\n"
-               "modification, are permitted provided that the following conditions are met:\n\n"
-               "- Redistributions of source code must retain the above copyright notice,\n"
-               "  this list of conditions and the following disclaimer.\n"
-               "- Redistributions in binary form must reproduce the above copyright notice,\n"
-               "  this list of conditions and the following disclaimer in the documentation\n"
-               "  and/or other materials provided with the distribution.\n\n"
-               "THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n"
-               "AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n"
-               "IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n"
-               "ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n"
-               "LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n"
-               "CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n"
-               "SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n"
-               "INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n"
-               "CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n"
-               "ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n"
-               "POSSIBILITY OF SUCH DAMAGE.\n");
+    log_line("fcactus " FCACTUS_VERSION ", inotify action daemon.\n"
+             "Copyright 2015-2022 Nicholas J. Kain\n"
+             "All rights reserved.\n\n"
+             "Redistribution and use in source and binary forms, with or without\n"
+             "modification, are permitted provided that the following conditions are met:\n\n"
+             "- Redistributions of source code must retain the above copyright notice,\n"
+             "  this list of conditions and the following disclaimer.\n"
+             "- Redistributions in binary form must reproduce the above copyright notice,\n"
+             "  this list of conditions and the following disclaimer in the documentation\n"
+             "  and/or other materials provided with the distribution.\n\n"
+             "THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n"
+             "AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n"
+             "IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n"
+             "ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n"
+             "LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n"
+             "CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n"
+             "SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n"
+             "INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n"
+             "CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n"
+             "ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n"
+             "POSSIBILITY OF SUCH DAMAGE.");
 }
 
 enum OpIdx {
@@ -370,7 +369,7 @@ enum OpIdx {
 static const option::Descriptor usage[] = {
     { OPT_UNKNOWN,    0,  "",           "", Arg::Unknown,
         "fcactus " FCACTUS_VERSION ", inotify action daemon.\n"
-        "Copyright 2015-2016 Nicholas J. Kain\n"
+        "Copyright 2015-2022 Nicholas J. Kain\n"
         "fcactus [options]...\n\nOptions:" },
     { OPT_HELP,       0, "h",            "help",    Arg::None, "\t-h, \t--help  \tPrint usage and exit." },
     { OPT_VERSION,    0, "v",         "version",    Arg::None, "\t-v, \t--version  \tPrint version and exit." },
@@ -424,7 +423,7 @@ int main(int argc, char* argv[])
     parse_config(inyfd, g_fcactus_conf);
 
     if (!inyfd.has_jobs()) {
-        fmt::print(stderr, "{}: no jobs, exiting\n", __func__);
+        log_line("%s: no jobs, exiting", __func__);
         std::exit(EXIT_FAILURE);
     }
 
@@ -452,7 +451,7 @@ int main(int argc, char* argv[])
             int fd = events[i].data.fd;
             if (fd == inyfd.fd()) {
                 if (!(events[i].events & EPOLLIN)) {
-                    fmt::print(stderr, "inyfd event that isn't IN\n");
+                    log_line("inyfd event that isn't IN");
                     continue;
                 }
                 inyfd.dispatch();
@@ -463,7 +462,7 @@ int main(int argc, char* argv[])
                     if (fd == j->first) {
                         found_timer = true;
                         if (!(events[i].events & EPOLLIN)) {
-                            fmt::print(stderr, "timerfd event that isn't IN\n");
+                            log_line("timerfd event that isn't IN");
                             break;
                         }
                         epfd.del(j->first);

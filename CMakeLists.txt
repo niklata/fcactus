@@ -124,7 +124,6 @@ if (${OSNAME} STREQUAL "Linux")
 endif()
 
 add_subdirectory(ncmlib)
-add_subdirectory(fmt)
 
 add_executable(fcactus "")
 
@@ -167,6 +166,5 @@ target_sources(fcactus PRIVATE
 target_include_directories(fcactus PRIVATE
   "${PROJECT_SOURCE_DIR}"
   "${PROJECT_SOURCE_DIR}/ncmlib"
-  "${PROJECT_SOURCE_DIR}/fmt"
 )
-target_link_libraries(fcactus PUBLIC ncmlib fmt)
+target_link_libraries(fcactus PUBLIC ncmlib)

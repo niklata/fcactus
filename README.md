@@ -48,12 +48,11 @@ with a little bit more effort, I have written a general purpose tool.
 * CMake
 * [Ragel 6](https://www.colm.net/open-source/ragel)
 * [ncmlib](https://github.com/niklata/ncmlib)
-* [fmtlib](https://github.com/fmtlib/fmt)
 
 ## Installation
 
 Install the necessary dependencies in the proper subdirectories of the
-fcactus source code (ncmlib, fmtlib).
+fcactus source code (ncmlib).
 ```
 $ mkdir build
 $ cd build

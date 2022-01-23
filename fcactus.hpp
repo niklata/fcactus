@@ -9,8 +9,8 @@
 #include <sys/prctl.h>
 #include <sys/inotify.h>
 #include <time.h>
-#include <fmt/format.h>
 #include "rlimit.hpp"
+#include <cstring>
 extern "C" {
 #include "nk/log.h"
 }

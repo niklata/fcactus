@@ -1,6 +1,7 @@
 #include "fcactus.hpp"
 #include <cstring>
 #include <climits>
+#include <cassert>
 #include <nk/string_replace_all.hpp>
 #include <nk/from_string.hpp>
 #include <nk/scopeguard.hpp>
@@ -53,7 +54,7 @@ struct ParseCfgState {
         if (!wm)
             return;
         if (!wm->valid()) {
-            fmt::print(stderr, "ignoring invalid job at line {}\n", linenum);
+            log_line("ignoring invalid job at line %zu", linenum);
             wm.reset();
             return;
         }
@@ -64,8 +65,7 @@ struct ParseCfgState {
     void setgroupv()
     {
         if (nk_gidbyname(v_str, &wm->group_)) {
-            fmt::print(stderr, "{}: nonexistent group specified at line {}\n",
-                       __func__, linenum);
+            log_line("%s: nonexistent group specified at line %zu", __func__, linenum);
             std::exit(EXIT_FAILURE);
         }
     }
@@ -73,8 +73,7 @@ struct ParseCfgState {
     void setuserv()
     {
         if (nk_uidgidbyname(v_str, &wm->user_, &wm->group_)) {
-            fmt::print(stderr, "{}: nonexistent user specified at line {}\n",
-                       __func__, linenum);
+            log_line("%s: nonexistent user specified at line %zu", __func__, linenum);
             std::exit(EXIT_FAILURE);
         }
     }
@@ -131,8 +130,7 @@ static void parse_command_key(ParseCfgState &fas)
 
     if (fas.cmdret != 0) {
         fas.cmdret = -3;
-        fmt::print(stderr, "Duplicate 'command' value at line {}\n",
-                   fas.linenum);
+        log_line("Duplicate 'command' value at line %zu", fas.linenum);
         std::exit(EXIT_FAILURE);
     }
 
@@ -141,15 +139,13 @@ static void parse_command_key(ParseCfgState &fas)
 
     if (pckm.cs == parse_cmd_key_m_error) {
         fas.cmdret = -1;
-        fmt::print(stderr, "Malformed 'command' value at line {}\n",
-                   fas.linenum);
+        log_line("Malformed 'command' value at line %zu", fas.linenum);
         std::exit(EXIT_FAILURE);
     } else if (pckm.cs >= parse_cmd_key_m_first_final)
         fas.cmdret = 1;
     else {
         fas.cmdret = -2;
-        fmt::print(stderr, "Incomplete 'command' value at line {}\n",
-                   fas.linenum);
+        log_line("Incomplete 'command' value at line %zu", fas.linenum);
         std::exit(EXIT_FAILURE);
     }
 }
@@ -168,14 +164,14 @@ static void parse_command_key(ParseCfgState &fas)
     }
     action IntValEn {
         if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
-            fmt::print(stderr, "invalid value where integer is expected on line {}\n", fas.linenum);
+            log_line("invalid value where integer is expected on line %zu", fas.linenum);
             std::exit(EXIT_FAILURE);
         }
     }
     action IntVal2St { fas.intv2_st = p; }
     action IntVal2En {
         if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
-            fmt::print(stderr, "invalid value where second integer in range is expected on line {}\n", fas.linenum);
+            log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
             std::exit(EXIT_FAILURE);
         }
         fas.intv2_exist = true;
@@ -188,8 +184,7 @@ static void parse_command_key(ParseCfgState &fas)
             ssize_t snl = snprintf(fas.v_str, sizeof fas.v_str,
                                    "%.*s", (int)fas.v_strlen, fas.strv_st);
             if (snl < 0 || (size_t)snl >= sizeof fas.v_str) {
-                fmt::print(stderr, "error parsing line {} in crontab; too long?\n",
-                           fas.linenum);
+                log_line("error parsing line %zu in crontab; too long?", fas.linenum);
                 std::exit(EXIT_FAILURE);
             }
         }
@@ -326,14 +321,14 @@ void parse_config(inotify &inot, const std::string &path)
 
     auto f = fopen(path.c_str(), "r");
     if (!f) {
-        fmt::print(stderr, "{}: failed to open file: '{}'\n", __func__, path);
+        log_line("%s: failed to open file: '%s'", __func__, path.c_str());
         std::exit(EXIT_FAILURE);
     }
     SCOPE_EXIT{ fclose(f); };
     while (!feof(f)) {
         if (!fgets(buf, sizeof buf, f)) {
             if (!feof(f))
-                fmt::print(stderr, "{}: io error fetching line of '{}'\n", __func__, path);
+                log_line("%s: io error fetching line of '%s'", __func__, path.c_str());
             break;
         }
         auto llen = strlen(buf);
@@ -343,8 +338,7 @@ void parse_config(inotify &inot, const std::string &path)
             buf[--llen] = 0;
         ++fas.linenum;
         if (do_parse_config(fas, buf, llen) < 0) {
-            fmt::print(stderr, "{}: do_parse_config({}) failed at line {}\n",
-                       __func__, path, fas.linenum);
+            log_line("%s: do_parse_config(%s) failed at line %zu", __func__, path.c_str(), fas.linenum);
             std::exit(EXIT_FAILURE);
         }
     }
