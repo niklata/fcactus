@@ -46,13 +46,10 @@ with a little bit more effort, I have written a general purpose tool.
 * Linux kernel
 * GCC or Clang
 * CMake
-* [Ragel 6](https://www.colm.net/open-source/ragel)
-* [ncmlib](https://github.com/niklata/ncmlib)
+* [Ragel](https://www.colm.net/open-source/ragel)
 
 ## Installation
 
-Install the necessary dependencies in the proper subdirectories of the
-fcactus source code (ncmlib).
 ```
 $ mkdir build
 $ cd build

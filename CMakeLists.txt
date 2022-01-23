@@ -123,8 +123,6 @@ if (${OSNAME} STREQUAL "Linux")
   endif()
 endif()
 
-add_subdirectory(ncmlib)
-
 add_executable(fcactus "")
 
 find_program(RAGEL ragel)
@@ -159,12 +157,14 @@ add_custom_target(fcactus_ragel DEPENDS ${RAGEL_CPP_FILES})
 add_dependencies(fcactus fcactus_ragel)
 
 target_sources(fcactus PRIVATE
+  "nk/io.c"
+  "nk/privs.c"
+  "nk/exec.c"
   ${RAGEL_CPP_FILES}
   "fcactus.cpp"
   "rlimit.cpp"
 )
 target_include_directories(fcactus PRIVATE
   "${PROJECT_SOURCE_DIR}"
-  "${PROJECT_SOURCE_DIR}/ncmlib"
 )
-target_link_libraries(fcactus PUBLIC ncmlib)
+target_link_libraries(fcactus PUBLIC)
