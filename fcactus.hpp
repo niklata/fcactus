@@ -1,3 +1,5 @@
+// Copyright 2015-2022 Nicholas J. Kain <njkain at gmail dot com>
+// SPDX-License-Identifier: MIT
 #ifndef NJK_INOTIFY_CRON_
 #define NJK_INOTIFY_CRON_
 

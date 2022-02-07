@@ -1,3 +1,5 @@
+// Copyright 2015-2022 Nicholas J. Kain <njkain at gmail dot com>
+// SPDX-License-Identifier: MIT
 #include "fcactus.hpp"
 #include <cstring>
 #include <climits>

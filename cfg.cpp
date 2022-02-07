@@ -1,4 +1,6 @@
 #line 1 "cfg.rl"
+// Copyright 2015-2022 Nicholas J. Kain <njkain at gmail dot com>
+// SPDX-License-Identifier: MIT
 #include "fcactus.hpp"
 #include <cstring>
 #include <climits>
@@ -96,11 +98,11 @@ struct pckm {
 };
 
 
-#line 114 "cfg.rl"
+#line 116 "cfg.rl"
 
 
 
-#line 104 "cfg.cpp"
+#line 106 "cfg.cpp"
 static const int parse_cmd_key_m_start = 1;
 static const int parse_cmd_key_m_first_final = 2;
 static const int parse_cmd_key_m_error = 0;
@@ -108,7 +110,7 @@ static const int parse_cmd_key_m_error = 0;
 static const int parse_cmd_key_m_en_main = 1;
 
 
-#line 116 "cfg.rl"
+#line 118 "cfg.rl"
 
 
 // cmdret = 0: Not parsed a command key yet.
@@ -131,15 +133,15 @@ static void parse_command_key(ParseCfgState &fas)
 	}
 	
 	
-#line 135 "cfg.cpp"
+#line 137 "cfg.cpp"
 	{
 		pckm.cs = (int)parse_cmd_key_m_start;
 	}
 	
-#line 137 "cfg.rl"
+#line 139 "cfg.rl"
 	
 	
-#line 143 "cfg.cpp"
+#line 145 "cfg.cpp"
 	{
 		switch ( pckm.cs ) {
 			case 1:
@@ -189,22 +191,22 @@ static void parse_command_key(ParseCfgState &fas)
 		}
 		_ctr2:
 		{
-#line 101 "cfg.rl"
+#line 103 "cfg.rl"
 			pckm.st = p; }
 		
-#line 196 "cfg.cpp"
+#line 198 "cfg.cpp"
 		
 		goto _st2;
 		_ctr4:
 		{
-#line 102 "cfg.rl"
+#line 104 "cfg.rl"
 			
 			fas.wm->cmd_ = std::string(pckm.st, p - pckm.st);
 			string_replace_all(fas.wm->cmd_, "\\ ", 2, " ");
 			string_replace_all(fas.wm->cmd_, "\\\\", 2, "\\");
 		}
 		
-#line 208 "cfg.cpp"
+#line 210 "cfg.cpp"
 		
 		goto _st2;
 		_st2:
@@ -240,54 +242,54 @@ static void parse_command_key(ParseCfgState &fas)
 		goto _out0;
 		_ctr10:
 		{
-#line 101 "cfg.rl"
+#line 103 "cfg.rl"
 			pckm.st = p; }
 		
-#line 247 "cfg.cpp"
+#line 249 "cfg.cpp"
 		
 		goto _st3;
 		_ctr6:
 		{
-#line 102 "cfg.rl"
+#line 104 "cfg.rl"
 			
 			fas.wm->cmd_ = std::string(pckm.st, p - pckm.st);
 			string_replace_all(fas.wm->cmd_, "\\ ", 2, " ");
 			string_replace_all(fas.wm->cmd_, "\\\\", 2, "\\");
 		}
 		
-#line 259 "cfg.cpp"
+#line 261 "cfg.cpp"
 		
 		goto _st3;
 		_ctr8:
 		{
-#line 101 "cfg.rl"
+#line 103 "cfg.rl"
 			pckm.st = p; }
 		
-#line 267 "cfg.cpp"
+#line 269 "cfg.cpp"
 		
 		{
-#line 107 "cfg.rl"
+#line 109 "cfg.rl"
 			fas.wm->args_ = std::string(pckm.st, p - pckm.st); }
 		
-#line 273 "cfg.cpp"
+#line 275 "cfg.cpp"
 		
 		goto _st3;
 		_ctr17:
 		{
-#line 102 "cfg.rl"
+#line 104 "cfg.rl"
 			
 			fas.wm->cmd_ = std::string(pckm.st, p - pckm.st);
 			string_replace_all(fas.wm->cmd_, "\\ ", 2, " ");
 			string_replace_all(fas.wm->cmd_, "\\\\", 2, "\\");
 		}
 		
-#line 285 "cfg.cpp"
+#line 287 "cfg.cpp"
 		
 		{
-#line 101 "cfg.rl"
+#line 103 "cfg.rl"
 			pckm.st = p; }
 		
-#line 291 "cfg.cpp"
+#line 293 "cfg.cpp"
 		
 		goto _st3;
 		_st3:
@@ -315,18 +317,18 @@ static void parse_command_key(ParseCfgState &fas)
 		}
 		_ctr9:
 		{
-#line 101 "cfg.rl"
+#line 103 "cfg.rl"
 			pckm.st = p; }
 		
-#line 322 "cfg.cpp"
+#line 324 "cfg.cpp"
 		
 		goto _st4;
 		_ctr11:
 		{
-#line 107 "cfg.rl"
+#line 109 "cfg.rl"
 			fas.wm->args_ = std::string(pckm.st, p - pckm.st); }
 		
-#line 330 "cfg.cpp"
+#line 332 "cfg.cpp"
 		
 		goto _st4;
 		_st4:
@@ -346,22 +348,22 @@ static void parse_command_key(ParseCfgState &fas)
 		}
 		_ctr3:
 		{
-#line 101 "cfg.rl"
+#line 103 "cfg.rl"
 			pckm.st = p; }
 		
-#line 353 "cfg.cpp"
+#line 355 "cfg.cpp"
 		
 		goto _st5;
 		_ctr13:
 		{
-#line 102 "cfg.rl"
+#line 104 "cfg.rl"
 			
 			fas.wm->cmd_ = std::string(pckm.st, p - pckm.st);
 			string_replace_all(fas.wm->cmd_, "\\ ", 2, " ");
 			string_replace_all(fas.wm->cmd_, "\\\\", 2, "\\");
 		}
 		
-#line 365 "cfg.cpp"
+#line 367 "cfg.cpp"
 		
 		goto _st5;
 		_st5:
@@ -392,38 +394,38 @@ static void parse_command_key(ParseCfgState &fas)
 		}
 		_ctr14:
 		{
-#line 102 "cfg.rl"
+#line 104 "cfg.rl"
 			
 			fas.wm->cmd_ = std::string(pckm.st, p - pckm.st);
 			string_replace_all(fas.wm->cmd_, "\\ ", 2, " ");
 			string_replace_all(fas.wm->cmd_, "\\\\", 2, "\\");
 		}
 		
-#line 403 "cfg.cpp"
+#line 405 "cfg.cpp"
 		
 		goto _st6;
 		_ctr15:
 		{
-#line 102 "cfg.rl"
+#line 104 "cfg.rl"
 			
 			fas.wm->cmd_ = std::string(pckm.st, p - pckm.st);
 			string_replace_all(fas.wm->cmd_, "\\ ", 2, " ");
 			string_replace_all(fas.wm->cmd_, "\\\\", 2, "\\");
 		}
 		
-#line 415 "cfg.cpp"
+#line 417 "cfg.cpp"
 		
 		{
-#line 101 "cfg.rl"
+#line 103 "cfg.rl"
 			pckm.st = p; }
 		
-#line 421 "cfg.cpp"
+#line 423 "cfg.cpp"
 		
 		{
-#line 107 "cfg.rl"
+#line 109 "cfg.rl"
 			fas.wm->args_ = std::string(pckm.st, p - pckm.st); }
 		
-#line 427 "cfg.cpp"
+#line 429 "cfg.cpp"
 		
 		goto _st6;
 		_st6:
@@ -454,28 +456,28 @@ static void parse_command_key(ParseCfgState &fas)
 		}
 		_ctr16:
 		{
-#line 101 "cfg.rl"
+#line 103 "cfg.rl"
 			pckm.st = p; }
 		
-#line 461 "cfg.cpp"
+#line 463 "cfg.cpp"
 		
 		goto _st7;
 		_ctr19:
 		{
-#line 102 "cfg.rl"
+#line 104 "cfg.rl"
 			
 			fas.wm->cmd_ = std::string(pckm.st, p - pckm.st);
 			string_replace_all(fas.wm->cmd_, "\\ ", 2, " ");
 			string_replace_all(fas.wm->cmd_, "\\\\", 2, "\\");
 		}
 		
-#line 473 "cfg.cpp"
+#line 475 "cfg.cpp"
 		
 		{
-#line 107 "cfg.rl"
+#line 109 "cfg.rl"
 			fas.wm->args_ = std::string(pckm.st, p - pckm.st); }
 		
-#line 479 "cfg.cpp"
+#line 481 "cfg.cpp"
 		
 		goto _st7;
 		_st7:
@@ -506,28 +508,28 @@ static void parse_command_key(ParseCfgState &fas)
 		}
 		_ctr18:
 		{
-#line 101 "cfg.rl"
+#line 103 "cfg.rl"
 			pckm.st = p; }
 		
-#line 513 "cfg.cpp"
+#line 515 "cfg.cpp"
 		
 		goto _st8;
 		_ctr22:
 		{
-#line 102 "cfg.rl"
+#line 104 "cfg.rl"
 			
 			fas.wm->cmd_ = std::string(pckm.st, p - pckm.st);
 			string_replace_all(fas.wm->cmd_, "\\ ", 2, " ");
 			string_replace_all(fas.wm->cmd_, "\\\\", 2, "\\");
 		}
 		
-#line 525 "cfg.cpp"
+#line 527 "cfg.cpp"
 		
 		{
-#line 107 "cfg.rl"
+#line 109 "cfg.rl"
 			fas.wm->args_ = std::string(pckm.st, p - pckm.st); }
 		
-#line 531 "cfg.cpp"
+#line 533 "cfg.cpp"
 		
 		goto _st8;
 		_st8:
@@ -568,7 +570,7 @@ static void parse_command_key(ParseCfgState &fas)
 		_out: {}
 	}
 	
-#line 138 "cfg.rl"
+#line 140 "cfg.rl"
 	
 	
 	if (pckm.cs == parse_cmd_key_m_error) {
@@ -585,11 +587,11 @@ static void parse_command_key(ParseCfgState &fas)
 }
 
 
-#line 298 "cfg.rl"
+#line 300 "cfg.rl"
 
 
 
-#line 593 "cfg.cpp"
+#line 595 "cfg.cpp"
 static const int factions_start = 1;
 static const int factions_first_final = 212;
 static const int factions_error = 0;
@@ -597,7 +599,7 @@ static const int factions_error = 0;
 static const int factions_en_main = 1;
 
 
-#line 300 "cfg.rl"
+#line 302 "cfg.rl"
 
 
 static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
@@ -606,15 +608,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 	const char *eof = pe;
 	
 	
-#line 610 "cfg.cpp"
+#line 612 "cfg.cpp"
 	{
 		fas.cs = (int)factions_start;
 	}
 	
-#line 307 "cfg.rl"
+#line 309 "cfg.rl"
 	
 	
-#line 618 "cfg.cpp"
+#line 620 "cfg.cpp"
 	{
 		switch ( fas.cs ) {
 			case 1:
@@ -1232,10 +1234,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		goto _out0;
 		_ctr2:
 		{
-#line 293 "cfg.rl"
+#line 295 "cfg.rl"
 			fas.finish_job(); fas.create_job(); }
 		
-#line 1239 "cfg.cpp"
+#line 1241 "cfg.cpp"
 		
 		goto _st2;
 		_st2:
@@ -1422,15 +1424,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr20:
 		{
-#line 180 "cfg.rl"
+#line 182 "cfg.rl"
 			fas.strv_st = p; fas.v_strlen = 0; }
 		
-#line 1429 "cfg.cpp"
+#line 1431 "cfg.cpp"
 		
 		goto _st213;
 		_ctr272:
 		{
-#line 181 "cfg.rl"
+#line 183 "cfg.rl"
 			
 			fas.v_strlen = p - fas.strv_st;
 			if (fas.v_strlen <= INT_MAX) {
@@ -1443,13 +1445,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 1447 "cfg.cpp"
+#line 1449 "cfg.cpp"
 		
 		{
-#line 232 "cfg.rl"
+#line 234 "cfg.rl"
 			fas.wm->chroot_ = std::string(fas.v_str, fas.v_strlen); }
 		
-#line 1453 "cfg.cpp"
+#line 1455 "cfg.cpp"
 		
 		goto _st213;
 		_st213:
@@ -1474,15 +1476,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr21:
 		{
-#line 180 "cfg.rl"
+#line 182 "cfg.rl"
 			fas.strv_st = p; fas.v_strlen = 0; }
 		
-#line 1481 "cfg.cpp"
+#line 1483 "cfg.cpp"
 		
 		goto _st214;
 		_ctr274:
 		{
-#line 181 "cfg.rl"
+#line 183 "cfg.rl"
 			
 			fas.v_strlen = p - fas.strv_st;
 			if (fas.v_strlen <= INT_MAX) {
@@ -1495,13 +1497,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 1499 "cfg.cpp"
+#line 1501 "cfg.cpp"
 		
 		{
-#line 232 "cfg.rl"
+#line 234 "cfg.rl"
 			fas.wm->chroot_ = std::string(fas.v_str, fas.v_strlen); }
 		
-#line 1505 "cfg.cpp"
+#line 1507 "cfg.cpp"
 		
 		goto _st214;
 		_st214:
@@ -1681,15 +1683,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr28:
 		{
-#line 180 "cfg.rl"
+#line 182 "cfg.rl"
 			fas.strv_st = p; fas.v_strlen = 0; }
 		
-#line 1688 "cfg.cpp"
+#line 1690 "cfg.cpp"
 		
 		goto _st215;
 		_ctr275:
 		{
-#line 181 "cfg.rl"
+#line 183 "cfg.rl"
 			
 			fas.v_strlen = p - fas.strv_st;
 			if (fas.v_strlen <= INT_MAX) {
@@ -1702,13 +1704,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 1706 "cfg.cpp"
+#line 1708 "cfg.cpp"
 		
 		{
-#line 233 "cfg.rl"
+#line 235 "cfg.rl"
 			parse_command_key(fas); }
 		
-#line 1712 "cfg.cpp"
+#line 1714 "cfg.cpp"
 		
 		goto _st215;
 		_st215:
@@ -1733,15 +1735,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr29:
 		{
-#line 180 "cfg.rl"
+#line 182 "cfg.rl"
 			fas.strv_st = p; fas.v_strlen = 0; }
 		
-#line 1740 "cfg.cpp"
+#line 1742 "cfg.cpp"
 		
 		goto _st216;
 		_ctr277:
 		{
-#line 181 "cfg.rl"
+#line 183 "cfg.rl"
 			
 			fas.v_strlen = p - fas.strv_st;
 			if (fas.v_strlen <= INT_MAX) {
@@ -1754,13 +1756,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 1758 "cfg.cpp"
+#line 1760 "cfg.cpp"
 		
 		{
-#line 233 "cfg.rl"
+#line 235 "cfg.rl"
 			parse_command_key(fas); }
 		
-#line 1764 "cfg.cpp"
+#line 1766 "cfg.cpp"
 		
 		goto _st216;
 		_st216:
@@ -2078,19 +2080,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr44:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 2089 "cfg.cpp"
+#line 2091 "cfg.cpp"
 		
 		goto _st217;
 		_ctr278:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -2098,16 +2100,16 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 2102 "cfg.cpp"
+#line 2104 "cfg.cpp"
 		
 		{
-#line 277 "cfg.rl"
+#line 279 "cfg.rl"
 			
 			fas.wm->debounce_rise_ms_ = 0;
 			fas.wm->debounce_fall_ms_ = fas.v_int;
 		}
 		
-#line 2111 "cfg.cpp"
+#line 2113 "cfg.cpp"
 		
 		goto _st217;
 		_st217:
@@ -2233,19 +2235,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr49:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 2244 "cfg.cpp"
+#line 2246 "cfg.cpp"
 		
 		goto _st218;
 		_ctr280:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -2253,16 +2255,16 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 2257 "cfg.cpp"
+#line 2259 "cfg.cpp"
 		
 		{
-#line 273 "cfg.rl"
+#line 275 "cfg.rl"
 			
 			fas.wm->debounce_rise_ms_ = fas.v_int;
 			fas.wm->debounce_fall_ms_ = 0;
 		}
 		
-#line 2266 "cfg.cpp"
+#line 2268 "cfg.cpp"
 		
 		goto _st218;
 		_st218:
@@ -2432,10 +2434,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr282:
 		{
-#line 244 "cfg.rl"
+#line 246 "cfg.rl"
 			fas.wm->eventflags_ |= IN_ACCESS; }
 		
-#line 2439 "cfg.cpp"
+#line 2441 "cfg.cpp"
 		
 		goto _st219;
 		_st219:
@@ -2532,10 +2534,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr283:
 		{
-#line 245 "cfg.rl"
+#line 247 "cfg.rl"
 			fas.wm->eventflags_ |= IN_ATTRIB; }
 		
-#line 2539 "cfg.cpp"
+#line 2541 "cfg.cpp"
 		
 		goto _st220;
 		_st220:
@@ -2638,10 +2640,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr284:
 		{
-#line 248 "cfg.rl"
+#line 250 "cfg.rl"
 			fas.wm->eventflags_ |= IN_CLOSE; }
 		
-#line 2645 "cfg.cpp"
+#line 2647 "cfg.cpp"
 		
 		goto _st221;
 		_st221:
@@ -2792,10 +2794,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr285:
 		{
-#line 247 "cfg.rl"
+#line 249 "cfg.rl"
 			fas.wm->eventflags_ |= IN_CLOSE_NOWRITE; }
 		
-#line 2799 "cfg.cpp"
+#line 2801 "cfg.cpp"
 		
 		goto _st222;
 		_st222:
@@ -2892,10 +2894,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr286:
 		{
-#line 246 "cfg.rl"
+#line 248 "cfg.rl"
 			fas.wm->eventflags_ |= IN_CLOSE_WRITE; }
 		
-#line 2899 "cfg.cpp"
+#line 2901 "cfg.cpp"
 		
 		goto _st223;
 		_st223:
@@ -2992,10 +2994,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr287:
 		{
-#line 249 "cfg.rl"
+#line 251 "cfg.rl"
 			fas.wm->eventflags_ |= IN_CREATE; }
 		
-#line 2999 "cfg.cpp"
+#line 3001 "cfg.cpp"
 		
 		goto _st224;
 		_st224:
@@ -3112,10 +3114,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr288:
 		{
-#line 250 "cfg.rl"
+#line 252 "cfg.rl"
 			fas.wm->eventflags_ |= IN_DELETE; }
 		
-#line 3119 "cfg.cpp"
+#line 3121 "cfg.cpp"
 		
 		goto _st225;
 		_st225:
@@ -3200,10 +3202,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr289:
 		{
-#line 251 "cfg.rl"
+#line 253 "cfg.rl"
 			fas.wm->eventflags_ |= IN_DELETE_SELF; }
 		
-#line 3207 "cfg.cpp"
+#line 3209 "cfg.cpp"
 		
 		goto _st226;
 		_st226:
@@ -3326,10 +3328,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr290:
 		{
-#line 252 "cfg.rl"
+#line 254 "cfg.rl"
 			fas.wm->eventflags_ |= IN_MODIFY; }
 		
-#line 3333 "cfg.cpp"
+#line 3335 "cfg.cpp"
 		
 		goto _st227;
 		_st227:
@@ -3366,10 +3368,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr291:
 		{
-#line 257 "cfg.rl"
+#line 259 "cfg.rl"
 			fas.wm->eventflags_ |= IN_MOVE; }
 		
-#line 3373 "cfg.cpp"
+#line 3375 "cfg.cpp"
 		
 		goto _st228;
 		_st228:
@@ -3466,10 +3468,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr292:
 		{
-#line 254 "cfg.rl"
+#line 256 "cfg.rl"
 			fas.wm->eventflags_ |= IN_MOVED_FROM; }
 		
-#line 3473 "cfg.cpp"
+#line 3475 "cfg.cpp"
 		
 		goto _st229;
 		_st229:
@@ -3546,10 +3548,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr293:
 		{
-#line 253 "cfg.rl"
+#line 255 "cfg.rl"
 			fas.wm->eventflags_ |= IN_MOVE_SELF; }
 		
-#line 3553 "cfg.cpp"
+#line 3555 "cfg.cpp"
 		
 		goto _st230;
 		_st230:
@@ -3586,10 +3588,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr294:
 		{
-#line 255 "cfg.rl"
+#line 257 "cfg.rl"
 			fas.wm->eventflags_ |= IN_MOVED_TO; }
 		
-#line 3593 "cfg.cpp"
+#line 3595 "cfg.cpp"
 		
 		goto _st231;
 		_st231:
@@ -3666,10 +3668,10 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr295:
 		{
-#line 256 "cfg.rl"
+#line 258 "cfg.rl"
 			fas.wm->eventflags_ |= IN_OPEN; }
 		
-#line 3673 "cfg.cpp"
+#line 3675 "cfg.cpp"
 		
 		goto _st232;
 		_st232:
@@ -3815,15 +3817,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr120:
 		{
-#line 180 "cfg.rl"
+#line 182 "cfg.rl"
 			fas.strv_st = p; fas.v_strlen = 0; }
 		
-#line 3822 "cfg.cpp"
+#line 3824 "cfg.cpp"
 		
 		goto _st233;
 		_ctr296:
 		{
-#line 181 "cfg.rl"
+#line 183 "cfg.rl"
 			
 			fas.v_strlen = p - fas.strv_st;
 			if (fas.v_strlen <= INT_MAX) {
@@ -3836,13 +3838,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 3840 "cfg.cpp"
+#line 3842 "cfg.cpp"
 		
 		{
-#line 230 "cfg.rl"
+#line 232 "cfg.rl"
 			fas.setgroupv(); }
 		
-#line 3846 "cfg.cpp"
+#line 3848 "cfg.cpp"
 		
 		goto _st233;
 		_st233:
@@ -3867,15 +3869,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr121:
 		{
-#line 180 "cfg.rl"
+#line 182 "cfg.rl"
 			fas.strv_st = p; fas.v_strlen = 0; }
 		
-#line 3874 "cfg.cpp"
+#line 3876 "cfg.cpp"
 		
 		goto _st234;
 		_ctr298:
 		{
-#line 181 "cfg.rl"
+#line 183 "cfg.rl"
 			
 			fas.v_strlen = p - fas.strv_st;
 			if (fas.v_strlen <= INT_MAX) {
@@ -3888,13 +3890,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 3892 "cfg.cpp"
+#line 3894 "cfg.cpp"
 		
 		{
-#line 230 "cfg.rl"
+#line 232 "cfg.rl"
 			fas.setgroupv(); }
 		
-#line 3898 "cfg.cpp"
+#line 3900 "cfg.cpp"
 		
 		goto _st234;
 		_st234:
@@ -4068,19 +4070,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr133:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 4079 "cfg.cpp"
+#line 4081 "cfg.cpp"
 		
 		goto _st235;
 		_ctr299:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -4088,13 +4090,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 4092 "cfg.cpp"
+#line 4094 "cfg.cpp"
 		
 		{
-#line 198 "cfg.rl"
+#line 200 "cfg.rl"
 			fas.setlim(RLIMIT_AS); }
 		
-#line 4098 "cfg.cpp"
+#line 4100 "cfg.cpp"
 		
 		goto _st235;
 		_st235:
@@ -4117,7 +4119,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr300:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -4125,7 +4127,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 4129 "cfg.cpp"
+#line 4131 "cfg.cpp"
 		
 		goto _st99;
 		_st99:
@@ -4145,15 +4147,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr135:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 4152 "cfg.cpp"
+#line 4154 "cfg.cpp"
 		
 		goto _st236;
 		_ctr302:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -4162,13 +4164,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 4166 "cfg.cpp"
+#line 4168 "cfg.cpp"
 		
 		{
-#line 198 "cfg.rl"
+#line 200 "cfg.rl"
 			fas.setlim(RLIMIT_AS); }
 		
-#line 4172 "cfg.cpp"
+#line 4174 "cfg.cpp"
 		
 		goto _st236;
 		_st236:
@@ -4300,19 +4302,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr141:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 4311 "cfg.cpp"
+#line 4313 "cfg.cpp"
 		
 		goto _st237;
 		_ctr304:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -4320,13 +4322,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 4324 "cfg.cpp"
+#line 4326 "cfg.cpp"
 		
 		{
-#line 203 "cfg.rl"
+#line 205 "cfg.rl"
 			fas.setlim(RLIMIT_CORE); }
 		
-#line 4330 "cfg.cpp"
+#line 4332 "cfg.cpp"
 		
 		goto _st237;
 		_st237:
@@ -4349,7 +4351,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr305:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -4357,7 +4359,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 4361 "cfg.cpp"
+#line 4363 "cfg.cpp"
 		
 		goto _st105;
 		_st105:
@@ -4377,15 +4379,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr143:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 4384 "cfg.cpp"
+#line 4386 "cfg.cpp"
 		
 		goto _st238;
 		_ctr307:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -4394,13 +4396,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 4398 "cfg.cpp"
+#line 4400 "cfg.cpp"
 		
 		{
-#line 203 "cfg.rl"
+#line 205 "cfg.rl"
 			fas.setlim(RLIMIT_CORE); }
 		
-#line 4404 "cfg.cpp"
+#line 4406 "cfg.cpp"
 		
 		goto _st238;
 		_st238:
@@ -4486,19 +4488,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr146:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 4497 "cfg.cpp"
+#line 4499 "cfg.cpp"
 		
 		goto _st239;
 		_ctr309:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -4506,13 +4508,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 4510 "cfg.cpp"
+#line 4512 "cfg.cpp"
 		
 		{
-#line 207 "cfg.rl"
+#line 209 "cfg.rl"
 			fas.setlim(RLIMIT_CPU); }
 		
-#line 4516 "cfg.cpp"
+#line 4518 "cfg.cpp"
 		
 		goto _st239;
 		_st239:
@@ -4535,7 +4537,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr310:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -4543,7 +4545,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 4547 "cfg.cpp"
+#line 4549 "cfg.cpp"
 		
 		goto _st109;
 		_st109:
@@ -4563,15 +4565,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr148:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 4570 "cfg.cpp"
+#line 4572 "cfg.cpp"
 		
 		goto _st240;
 		_ctr312:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -4580,13 +4582,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 4584 "cfg.cpp"
+#line 4586 "cfg.cpp"
 		
 		{
-#line 207 "cfg.rl"
+#line 209 "cfg.rl"
 			fas.setlim(RLIMIT_CPU); }
 		
-#line 4590 "cfg.cpp"
+#line 4592 "cfg.cpp"
 		
 		goto _st240;
 		_st240:
@@ -4712,19 +4714,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr153:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 4723 "cfg.cpp"
+#line 4725 "cfg.cpp"
 		
 		goto _st241;
 		_ctr314:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -4732,13 +4734,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 4736 "cfg.cpp"
+#line 4738 "cfg.cpp"
 		
 		{
-#line 205 "cfg.rl"
+#line 207 "cfg.rl"
 			fas.setlim(RLIMIT_DATA); }
 		
-#line 4742 "cfg.cpp"
+#line 4744 "cfg.cpp"
 		
 		goto _st241;
 		_st241:
@@ -4761,7 +4763,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr315:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -4769,7 +4771,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 4773 "cfg.cpp"
+#line 4775 "cfg.cpp"
 		
 		goto _st115;
 		_st115:
@@ -4789,15 +4791,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr155:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 4796 "cfg.cpp"
+#line 4798 "cfg.cpp"
 		
 		goto _st242;
 		_ctr317:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -4806,13 +4808,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 4810 "cfg.cpp"
+#line 4812 "cfg.cpp"
 		
 		{
-#line 205 "cfg.rl"
+#line 207 "cfg.rl"
 			fas.setlim(RLIMIT_DATA); }
 		
-#line 4816 "cfg.cpp"
+#line 4818 "cfg.cpp"
 		
 		goto _st242;
 		_st242:
@@ -4958,19 +4960,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr161:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 4969 "cfg.cpp"
+#line 4971 "cfg.cpp"
 		
 		goto _st243;
 		_ctr319:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -4978,13 +4980,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 4982 "cfg.cpp"
+#line 4984 "cfg.cpp"
 		
 		{
-#line 206 "cfg.rl"
+#line 208 "cfg.rl"
 			fas.setlim(RLIMIT_FSIZE); }
 		
-#line 4988 "cfg.cpp"
+#line 4990 "cfg.cpp"
 		
 		goto _st243;
 		_st243:
@@ -5007,7 +5009,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr320:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -5015,7 +5017,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 5019 "cfg.cpp"
+#line 5021 "cfg.cpp"
 		
 		goto _st122;
 		_st122:
@@ -5035,15 +5037,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr163:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 5042 "cfg.cpp"
+#line 5044 "cfg.cpp"
 		
 		goto _st244;
 		_ctr322:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -5052,13 +5054,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 5056 "cfg.cpp"
+#line 5058 "cfg.cpp"
 		
 		{
-#line 206 "cfg.rl"
+#line 208 "cfg.rl"
 			fas.setlim(RLIMIT_FSIZE); }
 		
-#line 5062 "cfg.cpp"
+#line 5064 "cfg.cpp"
 		
 		goto _st244;
 		_st244:
@@ -5250,19 +5252,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr172:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 5261 "cfg.cpp"
+#line 5263 "cfg.cpp"
 		
 		goto _st245;
 		_ctr324:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -5270,13 +5272,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 5274 "cfg.cpp"
+#line 5276 "cfg.cpp"
 		
 		{
-#line 199 "cfg.rl"
+#line 201 "cfg.rl"
 			fas.setlim(RLIMIT_MEMLOCK); }
 		
-#line 5280 "cfg.cpp"
+#line 5282 "cfg.cpp"
 		
 		goto _st245;
 		_st245:
@@ -5299,7 +5301,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr325:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -5307,7 +5309,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 5311 "cfg.cpp"
+#line 5313 "cfg.cpp"
 		
 		goto _st131;
 		_st131:
@@ -5327,15 +5329,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr174:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 5334 "cfg.cpp"
+#line 5336 "cfg.cpp"
 		
 		goto _st246;
 		_ctr327:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -5344,13 +5346,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 5348 "cfg.cpp"
+#line 5350 "cfg.cpp"
 		
 		{
-#line 199 "cfg.rl"
+#line 201 "cfg.rl"
 			fas.setlim(RLIMIT_MEMLOCK); }
 		
-#line 5354 "cfg.cpp"
+#line 5356 "cfg.cpp"
 		
 		goto _st246;
 		_st246:
@@ -5536,19 +5538,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr182:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 5547 "cfg.cpp"
+#line 5549 "cfg.cpp"
 		
 		goto _st247;
 		_ctr329:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -5556,13 +5558,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 5560 "cfg.cpp"
+#line 5562 "cfg.cpp"
 		
 		{
-#line 208 "cfg.rl"
+#line 210 "cfg.rl"
 			fas.setlim(RLIMIT_MSGQUEUE); }
 		
-#line 5566 "cfg.cpp"
+#line 5568 "cfg.cpp"
 		
 		goto _st247;
 		_st247:
@@ -5585,7 +5587,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr330:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -5593,7 +5595,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 5597 "cfg.cpp"
+#line 5599 "cfg.cpp"
 		
 		goto _st140;
 		_st140:
@@ -5613,15 +5615,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr184:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 5620 "cfg.cpp"
+#line 5622 "cfg.cpp"
 		
 		goto _st248;
 		_ctr332:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -5630,13 +5632,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 5634 "cfg.cpp"
+#line 5636 "cfg.cpp"
 		
 		{
-#line 208 "cfg.rl"
+#line 210 "cfg.rl"
 			fas.setlim(RLIMIT_MSGQUEUE); }
 		
-#line 5640 "cfg.cpp"
+#line 5642 "cfg.cpp"
 		
 		goto _st248;
 		_st248:
@@ -5774,19 +5776,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr191:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 5785 "cfg.cpp"
+#line 5787 "cfg.cpp"
 		
 		goto _st249;
 		_ctr334:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -5794,13 +5796,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 5798 "cfg.cpp"
+#line 5800 "cfg.cpp"
 		
 		{
-#line 209 "cfg.rl"
+#line 211 "cfg.rl"
 			fas.setlim(RLIMIT_NICE); }
 		
-#line 5804 "cfg.cpp"
+#line 5806 "cfg.cpp"
 		
 		goto _st249;
 		_st249:
@@ -5823,7 +5825,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr335:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -5831,7 +5833,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 5835 "cfg.cpp"
+#line 5837 "cfg.cpp"
 		
 		goto _st146;
 		_st146:
@@ -5851,15 +5853,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr193:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 5858 "cfg.cpp"
+#line 5860 "cfg.cpp"
 		
 		goto _st250;
 		_ctr337:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -5868,13 +5870,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 5872 "cfg.cpp"
+#line 5874 "cfg.cpp"
 		
 		{
-#line 209 "cfg.rl"
+#line 211 "cfg.rl"
 			fas.setlim(RLIMIT_NICE); }
 		
-#line 5878 "cfg.cpp"
+#line 5880 "cfg.cpp"
 		
 		goto _st250;
 		_st250:
@@ -6020,19 +6022,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr199:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 6031 "cfg.cpp"
+#line 6033 "cfg.cpp"
 		
 		goto _st251;
 		_ctr339:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -6040,13 +6042,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 6044 "cfg.cpp"
+#line 6046 "cfg.cpp"
 		
 		{
-#line 200 "cfg.rl"
+#line 202 "cfg.rl"
 			fas.setlim(RLIMIT_NOFILE); }
 		
-#line 6050 "cfg.cpp"
+#line 6052 "cfg.cpp"
 		
 		goto _st251;
 		_st251:
@@ -6069,7 +6071,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr340:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -6077,7 +6079,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 6081 "cfg.cpp"
+#line 6083 "cfg.cpp"
 		
 		goto _st153;
 		_st153:
@@ -6097,15 +6099,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr201:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 6104 "cfg.cpp"
+#line 6106 "cfg.cpp"
 		
 		goto _st252;
 		_ctr342:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -6114,13 +6116,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 6118 "cfg.cpp"
+#line 6120 "cfg.cpp"
 		
 		{
-#line 200 "cfg.rl"
+#line 202 "cfg.rl"
 			fas.setlim(RLIMIT_NOFILE); }
 		
-#line 6124 "cfg.cpp"
+#line 6126 "cfg.cpp"
 		
 		goto _st252;
 		_st252:
@@ -6246,19 +6248,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr206:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 6257 "cfg.cpp"
+#line 6259 "cfg.cpp"
 		
 		goto _st253;
 		_ctr344:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -6266,13 +6268,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 6270 "cfg.cpp"
+#line 6272 "cfg.cpp"
 		
 		{
-#line 201 "cfg.rl"
+#line 203 "cfg.rl"
 			fas.setlim(RLIMIT_NPROC); }
 		
-#line 6276 "cfg.cpp"
+#line 6278 "cfg.cpp"
 		
 		goto _st253;
 		_st253:
@@ -6295,7 +6297,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr345:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -6303,7 +6305,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 6307 "cfg.cpp"
+#line 6309 "cfg.cpp"
 		
 		goto _st159;
 		_st159:
@@ -6323,15 +6325,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr208:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 6330 "cfg.cpp"
+#line 6332 "cfg.cpp"
 		
 		goto _st254;
 		_ctr347:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -6340,13 +6342,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 6344 "cfg.cpp"
+#line 6346 "cfg.cpp"
 		
 		{
-#line 201 "cfg.rl"
+#line 203 "cfg.rl"
 			fas.setlim(RLIMIT_NPROC); }
 		
-#line 6350 "cfg.cpp"
+#line 6352 "cfg.cpp"
 		
 		goto _st254;
 		_st254:
@@ -6458,19 +6460,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr213:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 6469 "cfg.cpp"
+#line 6471 "cfg.cpp"
 		
 		goto _st255;
 		_ctr349:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -6478,13 +6480,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 6482 "cfg.cpp"
+#line 6484 "cfg.cpp"
 		
 		{
-#line 202 "cfg.rl"
+#line 204 "cfg.rl"
 			fas.setlim(RLIMIT_RSS); }
 		
-#line 6488 "cfg.cpp"
+#line 6490 "cfg.cpp"
 		
 		goto _st255;
 		_st255:
@@ -6507,7 +6509,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr350:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -6515,7 +6517,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 6519 "cfg.cpp"
+#line 6521 "cfg.cpp"
 		
 		goto _st164;
 		_st164:
@@ -6535,15 +6537,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr215:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 6542 "cfg.cpp"
+#line 6544 "cfg.cpp"
 		
 		goto _st256;
 		_ctr352:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -6552,13 +6554,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 6556 "cfg.cpp"
+#line 6558 "cfg.cpp"
 		
 		{
-#line 202 "cfg.rl"
+#line 204 "cfg.rl"
 			fas.setlim(RLIMIT_RSS); }
 		
-#line 6562 "cfg.cpp"
+#line 6564 "cfg.cpp"
 		
 		goto _st256;
 		_st256:
@@ -6710,19 +6712,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr222:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 6721 "cfg.cpp"
+#line 6723 "cfg.cpp"
 		
 		goto _st257;
 		_ctr354:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -6730,13 +6732,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 6734 "cfg.cpp"
+#line 6736 "cfg.cpp"
 		
 		{
-#line 211 "cfg.rl"
+#line 213 "cfg.rl"
 			fas.setlim(RLIMIT_RTPRIO); }
 		
-#line 6740 "cfg.cpp"
+#line 6742 "cfg.cpp"
 		
 		goto _st257;
 		_st257:
@@ -6759,7 +6761,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr355:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -6767,7 +6769,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 6771 "cfg.cpp"
+#line 6773 "cfg.cpp"
 		
 		goto _st171;
 		_st171:
@@ -6787,15 +6789,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr224:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 6794 "cfg.cpp"
+#line 6796 "cfg.cpp"
 		
 		goto _st258;
 		_ctr357:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -6804,13 +6806,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 6808 "cfg.cpp"
+#line 6810 "cfg.cpp"
 		
 		{
-#line 211 "cfg.rl"
+#line 213 "cfg.rl"
 			fas.setlim(RLIMIT_RTPRIO); }
 		
-#line 6814 "cfg.cpp"
+#line 6816 "cfg.cpp"
 		
 		goto _st258;
 		_st258:
@@ -6936,19 +6938,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr229:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 6947 "cfg.cpp"
+#line 6949 "cfg.cpp"
 		
 		goto _st259;
 		_ctr359:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -6956,13 +6958,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 6960 "cfg.cpp"
+#line 6962 "cfg.cpp"
 		
 		{
-#line 210 "cfg.rl"
+#line 212 "cfg.rl"
 			fas.setlim(RLIMIT_RTTIME); }
 		
-#line 6966 "cfg.cpp"
+#line 6968 "cfg.cpp"
 		
 		goto _st259;
 		_st259:
@@ -6985,7 +6987,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr360:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -6993,7 +6995,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 6997 "cfg.cpp"
+#line 6999 "cfg.cpp"
 		
 		goto _st177;
 		_st177:
@@ -7013,15 +7015,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr231:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 7020 "cfg.cpp"
+#line 7022 "cfg.cpp"
 		
 		goto _st260;
 		_ctr362:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -7030,13 +7032,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 7034 "cfg.cpp"
+#line 7036 "cfg.cpp"
 		
 		{
-#line 210 "cfg.rl"
+#line 212 "cfg.rl"
 			fas.setlim(RLIMIT_RTTIME); }
 		
-#line 7040 "cfg.cpp"
+#line 7042 "cfg.cpp"
 		
 		goto _st260;
 		_st260:
@@ -7288,19 +7290,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr243:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 7299 "cfg.cpp"
+#line 7301 "cfg.cpp"
 		
 		goto _st261;
 		_ctr364:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -7308,13 +7310,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 7312 "cfg.cpp"
+#line 7314 "cfg.cpp"
 		
 		{
-#line 212 "cfg.rl"
+#line 214 "cfg.rl"
 			fas.setlim(RLIMIT_SIGPENDING); }
 		
-#line 7318 "cfg.cpp"
+#line 7320 "cfg.cpp"
 		
 		goto _st261;
 		_st261:
@@ -7337,7 +7339,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr365:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -7345,7 +7347,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 7349 "cfg.cpp"
+#line 7351 "cfg.cpp"
 		
 		goto _st189;
 		_st189:
@@ -7365,15 +7367,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr245:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 7372 "cfg.cpp"
+#line 7374 "cfg.cpp"
 		
 		goto _st262;
 		_ctr367:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -7382,13 +7384,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 7386 "cfg.cpp"
+#line 7388 "cfg.cpp"
 		
 		{
-#line 212 "cfg.rl"
+#line 214 "cfg.rl"
 			fas.setlim(RLIMIT_SIGPENDING); }
 		
-#line 7392 "cfg.cpp"
+#line 7394 "cfg.cpp"
 		
 		goto _st262;
 		_st262:
@@ -7514,19 +7516,19 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr250:
 		{
-#line 160 "cfg.rl"
+#line 162 "cfg.rl"
 			
 			fas.intv_st = p;
 			fas.v_int = fas.v_int2 = 0;
 			fas.intv2_exist = false;
 		}
 		
-#line 7525 "cfg.cpp"
+#line 7527 "cfg.cpp"
 		
 		goto _st263;
 		_ctr369:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -7534,13 +7536,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 7538 "cfg.cpp"
+#line 7540 "cfg.cpp"
 		
 		{
-#line 204 "cfg.rl"
+#line 206 "cfg.rl"
 			fas.setlim(RLIMIT_STACK); }
 		
-#line 7544 "cfg.cpp"
+#line 7546 "cfg.cpp"
 		
 		goto _st263;
 		_st263:
@@ -7563,7 +7565,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr370:
 		{
-#line 165 "cfg.rl"
+#line 167 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv_st, p - fas.intv_st)) fas.v_int = *t; else {
 				log_line("invalid value where integer is expected on line %zu", fas.linenum);
@@ -7571,7 +7573,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 7575 "cfg.cpp"
+#line 7577 "cfg.cpp"
 		
 		goto _st195;
 		_st195:
@@ -7591,15 +7593,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr252:
 		{
-#line 171 "cfg.rl"
+#line 173 "cfg.rl"
 			fas.intv2_st = p; }
 		
-#line 7598 "cfg.cpp"
+#line 7600 "cfg.cpp"
 		
 		goto _st264;
 		_ctr372:
 		{
-#line 172 "cfg.rl"
+#line 174 "cfg.rl"
 			
 			if (auto t = nk::from_string<int>(fas.intv2_st, p - fas.intv2_st)) fas.v_int2 = *t; {
 				log_line("invalid value where second integer in range is expected on line %zu", fas.linenum);
@@ -7608,13 +7610,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			fas.intv2_exist = true;
 		}
 		
-#line 7612 "cfg.cpp"
+#line 7614 "cfg.cpp"
 		
 		{
-#line 204 "cfg.rl"
+#line 206 "cfg.rl"
 			fas.setlim(RLIMIT_STACK); }
 		
-#line 7618 "cfg.cpp"
+#line 7620 "cfg.cpp"
 		
 		goto _st264;
 		_st264:
@@ -7743,15 +7745,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr257:
 		{
-#line 180 "cfg.rl"
+#line 182 "cfg.rl"
 			fas.strv_st = p; fas.v_strlen = 0; }
 		
-#line 7750 "cfg.cpp"
+#line 7752 "cfg.cpp"
 		
 		goto _st265;
 		_ctr374:
 		{
-#line 181 "cfg.rl"
+#line 183 "cfg.rl"
 			
 			fas.v_strlen = p - fas.strv_st;
 			if (fas.v_strlen <= INT_MAX) {
@@ -7764,13 +7766,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 7768 "cfg.cpp"
+#line 7770 "cfg.cpp"
 		
 		{
-#line 235 "cfg.rl"
+#line 237 "cfg.rl"
 			fas.wm->path_ = std::string(fas.v_str, fas.v_strlen); }
 		
-#line 7774 "cfg.cpp"
+#line 7776 "cfg.cpp"
 		
 		goto _st265;
 		_st265:
@@ -7795,15 +7797,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr258:
 		{
-#line 180 "cfg.rl"
+#line 182 "cfg.rl"
 			fas.strv_st = p; fas.v_strlen = 0; }
 		
-#line 7802 "cfg.cpp"
+#line 7804 "cfg.cpp"
 		
 		goto _st266;
 		_ctr376:
 		{
-#line 181 "cfg.rl"
+#line 183 "cfg.rl"
 			
 			fas.v_strlen = p - fas.strv_st;
 			if (fas.v_strlen <= INT_MAX) {
@@ -7816,13 +7818,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 7820 "cfg.cpp"
+#line 7822 "cfg.cpp"
 		
 		{
-#line 235 "cfg.rl"
+#line 237 "cfg.rl"
 			fas.wm->path_ = std::string(fas.v_str, fas.v_strlen); }
 		
-#line 7826 "cfg.cpp"
+#line 7828 "cfg.cpp"
 		
 		goto _st266;
 		_st266:
@@ -7962,15 +7964,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr263:
 		{
-#line 180 "cfg.rl"
+#line 182 "cfg.rl"
 			fas.strv_st = p; fas.v_strlen = 0; }
 		
-#line 7969 "cfg.cpp"
+#line 7971 "cfg.cpp"
 		
 		goto _st267;
 		_ctr377:
 		{
-#line 181 "cfg.rl"
+#line 183 "cfg.rl"
 			
 			fas.v_strlen = p - fas.strv_st;
 			if (fas.v_strlen <= INT_MAX) {
@@ -7983,13 +7985,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 7987 "cfg.cpp"
+#line 7989 "cfg.cpp"
 		
 		{
-#line 231 "cfg.rl"
+#line 233 "cfg.rl"
 			fas.setuserv(); }
 		
-#line 7993 "cfg.cpp"
+#line 7995 "cfg.cpp"
 		
 		goto _st267;
 		_st267:
@@ -8014,15 +8016,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr264:
 		{
-#line 180 "cfg.rl"
+#line 182 "cfg.rl"
 			fas.strv_st = p; fas.v_strlen = 0; }
 		
-#line 8021 "cfg.cpp"
+#line 8023 "cfg.cpp"
 		
 		goto _st268;
 		_ctr379:
 		{
-#line 181 "cfg.rl"
+#line 183 "cfg.rl"
 			
 			fas.v_strlen = p - fas.strv_st;
 			if (fas.v_strlen <= INT_MAX) {
@@ -8035,13 +8037,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 8039 "cfg.cpp"
+#line 8041 "cfg.cpp"
 		
 		{
-#line 231 "cfg.rl"
+#line 233 "cfg.rl"
 			fas.setuserv(); }
 		
-#line 8045 "cfg.cpp"
+#line 8047 "cfg.cpp"
 		
 		goto _st268;
 		_st268:
@@ -8201,15 +8203,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr270:
 		{
-#line 180 "cfg.rl"
+#line 182 "cfg.rl"
 			fas.strv_st = p; fas.v_strlen = 0; }
 		
-#line 8208 "cfg.cpp"
+#line 8210 "cfg.cpp"
 		
 		goto _st269;
 		_ctr380:
 		{
-#line 181 "cfg.rl"
+#line 183 "cfg.rl"
 			
 			fas.v_strlen = p - fas.strv_st;
 			if (fas.v_strlen <= INT_MAX) {
@@ -8222,13 +8224,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 8226 "cfg.cpp"
+#line 8228 "cfg.cpp"
 		
 		{
-#line 234 "cfg.rl"
+#line 236 "cfg.rl"
 			fas.wm->filepath_ = std::string(fas.v_str, fas.v_strlen); }
 		
-#line 8232 "cfg.cpp"
+#line 8234 "cfg.cpp"
 		
 		goto _st269;
 		_st269:
@@ -8253,15 +8255,15 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		}
 		_ctr271:
 		{
-#line 180 "cfg.rl"
+#line 182 "cfg.rl"
 			fas.strv_st = p; fas.v_strlen = 0; }
 		
-#line 8260 "cfg.cpp"
+#line 8262 "cfg.cpp"
 		
 		goto _st270;
 		_ctr382:
 		{
-#line 181 "cfg.rl"
+#line 183 "cfg.rl"
 			
 			fas.v_strlen = p - fas.strv_st;
 			if (fas.v_strlen <= INT_MAX) {
@@ -8274,13 +8276,13 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 			}
 		}
 		
-#line 8278 "cfg.cpp"
+#line 8280 "cfg.cpp"
 		
 		{
-#line 234 "cfg.rl"
+#line 236 "cfg.rl"
 			fas.wm->filepath_ = std::string(fas.v_str, fas.v_strlen); }
 		
-#line 8284 "cfg.cpp"
+#line 8286 "cfg.cpp"
 		
 		goto _st270;
 		_st270:
@@ -8583,7 +8585,7 @@ static int do_parse_config(ParseCfgState &fas, const char *p, size_t plen)
 		_out: {}
 	}
 	
-#line 308 "cfg.rl"
+#line 310 "cfg.rl"
 	
 	
 	if (fas.cs == factions_error)
