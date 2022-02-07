@@ -1,8 +1,6 @@
 # fcactus
-
 Copyright 2015-2022 Nicholas J. Kain.
-
-License: Two-clause BSD.
+See LICENSE for licensing information.
 
 ## Introduction
 
