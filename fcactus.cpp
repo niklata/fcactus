@@ -30,6 +30,7 @@ static std::vector<std::pair<int, int>> debounce_rise_timers;
 static epollfd epfd;
 
 static std::string g_fcactus_conf("/etc/fcactus.actions");
+static std::optional<int> s6_notify_fd;
 
 static void fail_on_fdne(const std::string &file, int mode)
 {
@@ -380,15 +381,17 @@ static void process_options(int ac, char *av[])
         {"help", 0, (int *)0, 'h'},
         {"version", 0, (int *)0, 'v'},
         {"config", 1, (int *)0, 'c'},
+        {"s6-notify", 1, (int *)0, 'd'},
         {(const char *)0, 0, (int *)0, 0 }
     };
     for (;;) {
-        auto c = getopt_long(ac, av, "hvc:", long_options, (int *)0);
+        auto c = getopt_long(ac, av, "hvc:d:", long_options, (int *)0);
         if (c == -1) break;
         switch (c) {
             case 'h': usage(); std::exit(EXIT_SUCCESS); break;
             case 'v': print_version(); std::exit(EXIT_SUCCESS); break;
             case 'c': g_fcactus_conf = optarg; break;
+            case 'd': s6_notify_fd = atoi(optarg); break;
             default: break;
         }
     }
@@ -420,6 +423,12 @@ int main(int argc, char* argv[])
     struct epoll_event events[2];
 
     epfd.add(inyfd.fd());
+
+    if (s6_notify_fd) {
+        char buf[] = "\n";
+        safe_write(*s6_notify_fd, buf, 1);
+        close(*s6_notify_fd);
+    }
 
     while (1) {
         int nevents = epoll_wait(epfd.fd_, events, 1, -1);
