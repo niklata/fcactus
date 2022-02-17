@@ -20,11 +20,7 @@ The configuration file format of fcactus is of a very similar flavor to
 ncron and is mostly different because it is not necessary to assign unique
 numerical identifiers to jobs for mapping them to run history state.
 
-fcactus is intended to run from a process supervisor like runit or s6.
-I don't provide any inbuilt facility for forking into the background,
-writing pidfiles, logging to syslog, or anything like that.  ncron
-supports these things because it's older and I don't like removing
-features.
+fcactus is intended to run from a process supervisor like s6 or runit.
 
 ## Motivation
 
